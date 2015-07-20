@@ -1,7 +1,7 @@
 # SBT Play Gulp Plugin
 > Gulp Asset Pipeline for Play Framework
 
-SBT Play Gulp Plugin is an SBT plugin which allows you to use Gulp for static assets compilation in Play Framework projects.
+**SBT Play Gulp Plugin** is an SBT plugin which allows you to use Gulp for static assets compilation in Play Framework projects.
 
 ## Features
 
