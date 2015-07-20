@@ -47,12 +47,12 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 8. Compile and run the Play project:
   ```bash
   $ sbt
-  [your-play-project] $ compilegulp
+  [your-play-project] $ compile
   Will run: [gulp, --gulpfile=gulpfile.js, --force] in /home/path/to/your/play/project/ui
   ...
   [your-play-project] $ run
   ```
-  You will see the compiled app at http://localhost:9000/ui/
+  You will see the compiled app at http://localhost:9000/, which is redirected to http://localhost:9000/ui/ showing static web assets located in the ui/app directory in the dev run mode and in the ui/dist directory in the production start mode.
 
 Built upon the SBT AutoPlugin architecture, the Play Gulp plugin adds itself automatically to projects that have the sbt-play plugin enabled once you add it in `project/plugins.sbt`. It is not necessary to manually add `enablePlugins(PlayGulpPlugin)` to `build.sbt`. When compilation or testing takes place, then the `PlayGulpPlugin` runs all required tasks on your Play projects, copies the output to the Play assets jar.
 
