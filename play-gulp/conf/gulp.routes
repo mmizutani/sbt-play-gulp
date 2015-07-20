@@ -1,0 +1,7 @@
+# Routes
+# This file defines all application gulp.routes (Higher priority gulp.routes first)
+# ~~~~
+
+# Home page
+GET      /*file   com.mmizutani.playgulp.Gulp.at(file)
+GET      /        com.mmizutani.playgulp.Gulp.index

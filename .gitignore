@@ -1,0 +1,52 @@
+/RUNNING_PID
+/logs/
+/project/*-shim.sbt
+/project/project/
+/project/target/
+/target/
+
+*.class
+*.log
+
+# sbt specific
+.cache
+.classpath
+.target
+#dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+# Scala-IDE specific
+.scala_dependencies
+.project
+.settings
+.cache-main
+.cache-tests
+bin
+
+# IntelliJ IDEA specific
+.idea
+
+# play-gulp-demo
+play-gulp-demo/*/logs
+play-gulp-demo/*/project/project
+play-gulp-demo/*/project/target
+play-gulp-demo/*/target
+play-gulp-demo/*/bin
+play-gulp-demo/*/tmp
+play-gulp-demo/*/.history
+play-gulp-demo/*/dist
+play-gulp-demo/*/.idea
+play-gulp-demo/*/*.iml
+play-gulp-demo/*/out
+play-gulp-demo/*/.idea_modules
+play-gulp-demo/*/.classpath
+play-gulp-demo/*/.project
+play-gulp-demo/*/RUNNING_PID
+play-gulp-demo/*/.settings
+/bin/
+
+bower_components

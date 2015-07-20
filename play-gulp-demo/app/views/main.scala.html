@@ -1,0 +1,37 @@
+@(title: String)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>@title</title>
+        <link rel="stylesheet" media="screen" href='@routes.Assets.versioned("bower_components/bootstrap/dist/css/bootstrap.min.css")'>
+        <link rel="stylesheet" media="screen" href='@routes.Assets.versioned("bower_components/angularjs-toaster/toaster.css")'>
+        <link rel="stylesheet" media="screen" href='@routes.Assets.versioned("stylesheets/main.css")'>
+        <link rel="shortcut icon" type="image/png" href='@routes.Assets.versioned("images/favicon.png")'>
+    </head>
+    <body id="body" ng-app="app">
+        <!-- Navbar -->
+        <nav class="navbar navbar-default navbar-static-top" >
+            <div class="container">
+                    <!-- Brand -->
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="#">play-scala-angularjs-gulp</a>
+                </div>
+            </div>
+        </nav>
+            <!-- toaster -->
+        <toaster-container toaster-options="{'close-button': true}"></toaster-container>
+            <!-- Main content -->
+        <div ui-view></div>
+
+        <!-- scripts -->
+        <script type='text/javascript' src='@routes.Assets.versioned("bower_components/angular/angular.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.versioned("bower_components/angular-ui-router/release/angular-ui-router.js")'></script>
+        @*<script type='text/javascript' src='@routes.Assets.versioned("bower_components/angular-ui-bootstrap/ui-bootstrap.min.js")'></script>*@
+        <script type='text/javascript' src='@routes.Assets.versioned("bower_components/marked/lib/marked.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.versioned("bower_components/angular-marked/angular-marked.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.versioned("bower_components/angularjs-toaster/toaster.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.versioned("javascripts/app.js")'></script>
+        <script type='text/javascript' src='@routes.Assets.versioned("javascripts/app.tpl.js")'></script>
+    </body>
+</html>
