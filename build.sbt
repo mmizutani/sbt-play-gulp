@@ -6,6 +6,9 @@ name := """sbt-play-gulp"""
 
 version in ThisBuild := "0.0.1"
 
+//scalaVersion in Global := "2.10.4"
+//sbtVersion in ThisBuild := "0.13.8"
+
 lazy val `sbt-play-gulp` = (project in file("."))
   .enablePlugins(PlaySbtPlugin, PlayReleaseBase)
   .aggregate(`play-gulp`)

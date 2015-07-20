@@ -11,6 +11,8 @@ name := """play-gulp-demo"""
 //scalaVersion in ThisBuild := "2.11.7"
 //crossScalaVersions := Seq("2.11.7")
 
+//scalaVersion in ThisBuild := "2.10.4"
+//sbtVersion in Global := "0.13.8"
 
 // Required by specs2 to get scalaz-stream
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
