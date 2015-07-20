@@ -27,7 +27,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
   ```
   addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2")
 
-  addSbtPlugin("com.mmizutani" % "sbt-gulp" % "0.0.1")
+  addSbtPlugin("com.mmizutani" % "sbt-play-gulp" % "0.0.1")
   ```
 
 4. Add the following routing settings in the `<your-project-root>/conf/routes` file:

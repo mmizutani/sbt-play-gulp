@@ -1,7 +1,4 @@
-lazy val root = (project in file(".")).enablePlugins(PlayScala).dependsOn(plugin)
-
-// Obtain reference path to the sbt-play-plugin project
-lazy val plugin = file("../").getCanonicalFile.toURI
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 name := """play-gulp-demo"""
 

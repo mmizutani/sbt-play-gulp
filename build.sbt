@@ -2,7 +2,9 @@
 
 sbtPlugin := true
 
-name := """sbt-play-gulp"""
+name := "sbt-play-gulp"
+
+organization := "com.mmizutani"
 
 version in ThisBuild := "0.0.1"
 
@@ -34,7 +36,7 @@ playBuildExtraTests := {
 }
 
 // playBuildExtraPublish := {
-//   (publishSigned in `sbt-gulp`).value
+//   (publishSigned in `sbt-play-gulp`).value
 // }
 
 scriptedSettings
@@ -45,6 +47,8 @@ scriptedBufferLog := false
 //  repository in bintray := "sbt-play-gulp",
 //  bintrayOrganization in bintray := None
 //)
+//bintrayPublishSettings
+//repository in bintray := "sbt-plugins"
 
 lazy val sbtPluginPublishSettings = Seq(
   publishMavenStyle := false,
