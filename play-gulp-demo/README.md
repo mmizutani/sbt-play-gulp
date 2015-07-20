@@ -1,1 +1,1 @@
-A demo application for the [Play Gulp plugin](http://www.github.com/mmizutani/play-gulp).
+A demo application for the [SBT Play Gulp plugin](http://www.github.com/mmizutani/sbt-play-gulp).
