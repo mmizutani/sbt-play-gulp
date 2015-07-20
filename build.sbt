@@ -11,7 +11,7 @@ version in ThisBuild := "0.0.1"
 lazy val `sbt-play-gulp` = (project in file("."))
   .aggregate(`play-gulp`)
   .dependsOn(`play-gulp`)
-  .settings(sbtPluginPublishSettings: _*)
+  .settings(mavenPublishSettings: _*)
 
 lazy val `play-gulp` = project.in(file("play-gulp"))
 
