@@ -9,10 +9,9 @@ organization := "com.mmizutani"
 version in ThisBuild := "0.0.1"
 
 lazy val `sbt-play-gulp` = (project in file("."))
-  //.enablePlugins(PlaySbtPlugin, PlayReleaseBase)
   .aggregate(`play-gulp`)
   .dependsOn(`play-gulp`)
-  .settings(mavenPublishSettings: _*)
+  .settings(sbtPluginPublishSettings: _*)
 
 lazy val `play-gulp` = project.in(file("play-gulp"))
 
@@ -26,26 +25,10 @@ homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp"))
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8")
 javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
 
-//playBuildRepoName in ThisBuild := "sbt-play-gulp"
-//
-//playBuildExtraTests := {
-//  (scripted in `sbt-play-gulp`).toTask("").value
-//}
-
-// playBuildExtraPublish := {
-//   (publishSigned in `sbt-play-gulp`).value
-// }
-
-//scriptedSettings
-//scriptedLaunchOpts <+= version apply { v => "-Dproject.version="+v }
-//scriptedBufferLog := false
-
-//lazy val bintrayPublishSettings = Seq(
-//  repository in bintray := "sbt-play-gulp",
-//  bintrayOrganization in bintray := None
-//)
-//bintrayPublishSettings
-//repository in bintray := "sbt-plugins"
+lazy val bintrayPublishSettings = Seq(
+  bintrayRepository in bintray := "sbt-play-gulp",
+  bintrayReleaseOnPublish in ThisBuild := false // false = two stage publishing (publish & bintrayRelease)
+)
 
 lazy val sbtPluginPublishSettings = Seq(
   publishMavenStyle := false,
