@@ -1,4 +1,4 @@
-import bintray.Keys._
+//import bintray.Keys._
 
 sbtPlugin := true
 
@@ -38,10 +38,10 @@ scriptedSettings
 scriptedLaunchOpts <+= version apply { v => "-Dproject.version="+v }
 scriptedBufferLog := false
 
-lazy val bintrayPublishSettings = Seq(
-  repository in bintray := "sbt-play-gulp",
-  bintrayOrganization in bintray := None
-)
+//lazy val bintrayPublishSettings = Seq(
+//  repository in bintray := "sbt-play-gulp",
+//  bintrayOrganization in bintray := None
+//)
 
 lazy val sbtPluginPublishSettings = Seq(
   publishMavenStyle := false,
