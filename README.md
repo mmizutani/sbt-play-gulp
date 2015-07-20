@@ -28,7 +28,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
 4. Add the following routing settings in the `<your-project-root>/conf/routes` file:
   ```
-  GET     /ui         com.mmizutani.sbt.gulp.Yeoman.index
+  GET     /ui         com.mmizutani.playgulp.Gulp.index
 
   ->      /ui/        gulp.Routes
   ```
