@@ -3,5 +3,5 @@
 # ~~~~
 
 # Home page
-GET      /*file   com.mmizutani.playgulp.Gulp.at(file)
-GET      /        com.mmizutani.playgulp.Gulp.index
+GET      /*file   com.github.mmizutani.playgulp.Gulp.at(file)
+GET      /        com.github.mmizutani.playgulp.Gulp.index

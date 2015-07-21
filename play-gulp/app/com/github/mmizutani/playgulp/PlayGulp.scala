@@ -1,4 +1,4 @@
-package com.mmizutani.playgulp
+package com.github.mmizutani.playgulp
 
 import play.api._
 import play.api.mvc._

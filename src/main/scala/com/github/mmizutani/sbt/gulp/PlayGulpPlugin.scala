@@ -1,4 +1,4 @@
-package com.mmizutani.sbt.gulp
+package com.github.mmizutani.sbt.gulp
 
 import play.twirl.sbt.Import.TwirlKeys
 import sbt._
