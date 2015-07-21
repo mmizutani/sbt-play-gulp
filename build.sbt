@@ -4,7 +4,7 @@ sbtPlugin := true
 
 name := "sbt-play-gulp"
 
-organization := "com.mmizutani"
+organization := "com.github.mmizutani"
 
 version in ThisBuild := "0.0.1"
 

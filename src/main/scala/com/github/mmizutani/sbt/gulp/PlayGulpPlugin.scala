@@ -62,7 +62,7 @@ object PlayGulpPlugin extends AutoPlugin {
   /**
    * Provides default settings
    */
-  override lazy val projectSettings: Seq[Setting[_]] = playGulpSettings
+  override lazy val projectSettings: Seq[Setting[_]] = playGulpSettings ++ withTemplates
 
   /**
    * Define if the plugin needs to append settings at the build-level (in ThisBuild)
@@ -145,7 +145,7 @@ object PlayGulpPlugin extends AutoPlugin {
   val withTemplates = Seq(
     sourceDirectories in TwirlKeys.compileTemplates in Compile ++= Seq(gulpDirectory.value / "dist"),
     gulpExcludes <<= gulpDirectory(yd => Seq(
-      yd + "/dist/components/",
+      yd + "/dist/bower_components/",
       yd + "/dist/images/",
       yd + "/dist/styles/"
     )),

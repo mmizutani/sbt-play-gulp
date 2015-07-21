@@ -20,7 +20,6 @@ lazy val plugin = file("../").getCanonicalFile.toURI
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2")
 
 // Use the sbt-play-gulp plugin to get support for npm/bower/gulp commands in the play console
-//addSbtPlugin("com.mmizutani" % "sbt-play-gulp" % "0.0.1")
 addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.0.1")
 
 // Not necessary for the sbt-play-gulp plugin to work but useful for development
