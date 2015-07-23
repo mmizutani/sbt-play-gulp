@@ -17,7 +17,7 @@ lazy val `sbt-play-gulp` = (project in file("."))
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
     javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
   )
-  .settings(bintrayPublishSettings: _*)
+  .settings(bintrayPublishSettings("sbt-play-gulp"): _*)
 
 lazy val `play-gulp` = project.in(file("play-gulp"))
   .enablePlugins(PlayScala)
@@ -34,10 +34,10 @@ lazy val `play-gulp` = project.in(file("play-gulp"))
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
     javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
   )
-  .settings(bintrayPublishSettings: _*)
+  .settings(bintrayPublishSettings("play-gulp"): _*)
 
-lazy val bintrayPublishSettings = Seq(
-  bintrayRepository in bintray := "sbt-play-gulp",
+def bintrayPublishSettings(projectName: String) = Seq(
+  bintrayRepository in bintray := projectName,
   bintrayReleaseOnPublish in bintray := false // false = two stage publishing (publish & bintrayRelease)
 )
 
