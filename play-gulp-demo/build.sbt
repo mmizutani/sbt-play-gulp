@@ -2,6 +2,8 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 name := "play-gulp-demo"
 
+scalaVersion := "2.11.6"
+
 // Required by specs2 to get scalaz-stream
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 

@@ -121,7 +121,7 @@ object PlayGulpPlugin extends AutoPlugin {
       val base = (gulpDirectory in Compile).value
       val gulpfileName = (gulpFile in Compile).value
       val isForceEnabled = (forceGulp in Compile).value
-      val result = runGulp(base, gulpfileName, List("dist"),isForceEnabled = isForceEnabled).exitValue()
+      val result = runGulp(base, gulpfileName, List("dist"), isForceEnabled = isForceEnabled).exitValue()
       if (result == 0) {
         result
       } else throw new Exception("gulp failed")

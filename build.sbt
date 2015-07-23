@@ -1,33 +1,44 @@
-//import bintray.Keys._
-
-sbtPlugin := true
-
-name := "sbt-play-gulp"
-
-organization := "com.github.mmizutani"
-
-version in ThisBuild := "0.0.1"
-
 lazy val `sbt-play-gulp` = (project in file("."))
   .aggregate(`play-gulp`)
   .dependsOn(`play-gulp`)
-  .settings(mavenPublishSettings: _*)
+  .settings(
+    name := "sbt-play-gulp",
+    version := "0.0.1",
+    sbtVersion in Global := "0.13.8",
+    //scalaVersion := "2.10.4",
+    //scalaVersion := "2.11.6",
+    //crossScalaVersions := Seq("2.10.4", "2.11.6"),
+    sbtPlugin := true,
+    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2"),
+    addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.2.2"),
+    organization := "com.github.mmizutani",
+    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
+    homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp")),
+    scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
+    javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
+  )
+  .settings(bintrayPublishSettings: _*)
 
 lazy val `play-gulp` = project.in(file("play-gulp"))
-
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2")
-addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.2.2")
-
-licenses := Seq("Apache License, Version 2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0"))
-
-homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp"))
-
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8")
-javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
+  .enablePlugins(PlayScala)
+  .settings(
+    name := "play-gulp",
+    version := "0.0.1",
+    libraryDependencies ++= Seq(),
+    scalaVersion := "2.11.6",
+    //scalaVersion in Global := "2.11.6",
+    crossScalaVersions := Seq("2.10.4", "2.11.6"),
+    organization := "com.github.mmizutani",
+    licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
+    homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp")),
+    scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
+    javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
+  )
+  .settings(bintrayPublishSettings: _*)
 
 lazy val bintrayPublishSettings = Seq(
   bintrayRepository in bintray := "sbt-play-gulp",
-  bintrayReleaseOnPublish in ThisBuild := false // false = two stage publishing (publish & bintrayRelease)
+  bintrayReleaseOnPublish in bintray := false // false = two stage publishing (publish & bintrayRelease)
 )
 
 lazy val sbtPluginPublishSettings = Seq(

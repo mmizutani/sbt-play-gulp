@@ -9,13 +9,6 @@ lazy val plugin = file("../").getCanonicalFile.toURI
 // or alternately use the github snapshot version
 //lazy val plugin = uri("git://github.com/mmizutani/sbt-play-gulp")
 
-//resolvers ++= Seq(
-//  Resolver.mavenLocal,
-//  Resolver.sbtPluginRepo("snapshots"),
-//  Resolver.sonatypeRepo("snapshots"),
-//  Resolver.typesafeRepo("snapshots")
-//)
-
 // Use the Play sbt plugin for Play projects
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2")
 
