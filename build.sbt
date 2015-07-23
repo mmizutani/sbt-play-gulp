@@ -17,7 +17,8 @@ lazy val `sbt-play-gulp` = (project in file("."))
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
     javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
   )
-  .settings(bintrayPublishSettings("sbt-play-gulp"): _*)
+  //.settings(bintrayPublishSettings("sbt-play-gulp"): _*)
+  .settings(mavenPublishSettings)
 
 lazy val `play-gulp` = project.in(file("play-gulp"))
   .enablePlugins(PlayScala)
@@ -34,7 +35,8 @@ lazy val `play-gulp` = project.in(file("play-gulp"))
     scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
     javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
   )
-  .settings(bintrayPublishSettings("play-gulp"): _*)
+  //.settings(bintrayPublishSettings("play-gulp"): _*)
+  .settings(mavenPublishSettings)
 
 def bintrayPublishSettings(projectName: String) = Seq(
   bintrayRepository in bintray := projectName,
