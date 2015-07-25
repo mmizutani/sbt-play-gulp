@@ -7,17 +7,18 @@ var inject = require('gulp-inject');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
 var changed = require('gulp-changed');
+var plumber = require('gulp-plumber');
 var ngAnnotate = require('gulp-ng-annotate');
 var ngHtml2Js = require('gulp-ng-html2js');
 var minifyHtml = require('gulp-minify-html');
 var jshint = require('gulp-jshint');
 var rev = require('gulp-rev');
-var imagemin = require('gulp-imagemin');
-var svgmin = require('gulp-svgmin');
+var minifyCss = require('gulp-minify-css');
 var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var sass = require('gulp-sass');
-var plumber = require('gulp-plumber');
+var imagemin = require('gulp-imagemin');
+var svgmin = require('gulp-svgmin');
 var browserSync = require('browser-sync');
 var gutil = require('gulp-util');
 var del = require('del');
@@ -53,7 +54,10 @@ var paths = {
     tmp: dirs.tmp+'/styles',
     dest: dirs.dist+'/styles'
   },
-  sass: dirs.app+'/styles/**/*.sass',
+  sass: {
+    src: dirs.app+'/styles/**/*.sass',
+    dest: dirs.app+'/styles'
+  },
   jshint: ['gulpfile.js', dirs.app+'/scripts/{,*/}*.js'],
   index: dirs.app+'/index.html',
   image: {
@@ -77,7 +81,22 @@ gulp.task('clean2', function(cb) {
   del([dirs.tmp, dirs.dist], {force:true}, cb);
 });
 
-gulp.task('template:dist', function () {
+gulp.task('index', function () {
+  return gulp.src(paths.index)
+    .pipe(plumber({errorHandler: handleError}))
+    // It's not necessary to read the files (will speed up things), we're only after their paths:
+    .pipe(inject(gulp.src([paths.js.src, paths.css.src], {read: false}), {relative: true}))
+    .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
+    .pipe(gulp.dest('./app'));
+});
+
+gulp.task('index:dist', function () {
+  return gulp.src(paths.index)
+    .pipe(uglify())
+    .pipe(gulp.dest(dirs.dist));
+});
+
+gulp.task('template', function () {
   return gulp.src(paths.template.src)
     .pipe(plumber({errorHandler: handleError}))
     .pipe(minifyHtml({
@@ -92,20 +111,6 @@ gulp.task('template:dist', function () {
     .pipe(concat('app.tpl.min.js'))
     .pipe(uglify())
     .pipe(gulp.dest(paths.template.dest));
-});
-
-gulp.task('index', function () {
-  return gulp.src(paths.index)
-    .pipe(plumber({errorHandler: handleError}))
-    // It's not necessary to read the files (will speed up things), we're only after their paths:
-    .pipe(inject(gulp.src([paths.js.src, paths.css.src], {read: false}), {relative: true}))
-    .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
-    .pipe(gulp.dest(dirs.src));
-});
-
-gulp.task('index:dist', function () {
-  return gulp.src(paths.index)
-    .pipe(gulp.dest(dirs.dist));
 });
 
 gulp.task('jshint', function () {
@@ -124,7 +129,7 @@ gulp.task('js', ['clean'], function () {
     .pipe(ngAnnotate())
     .pipe(concat('app.min.js'))
     .pipe(uglify())
-    .pipe(sourcemaps.write('.'))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(paths.js.dest));
 });
 
@@ -133,40 +138,43 @@ gulp.task('foo', function() {
     gulp.src('src/*.coffee')
       //.pipe(coffee())
       .pipe(gulp.dest('js/')),
-
     gulp.src('src/*.less')
       //.pipe(less())
       .pipe(gulp.dest('css/'))
   );
 });
 
-gulp.task('css:tmp', function () {
+gulp.task('css:tmp', ['sass'], function () {
   return gulp.src(paths.css.src)
+    .pipe(plumber({errorHandler: handleError}))
+    .pipe(changed(paths.css.tmp))
     .pipe(autoprefixer({browsers: ['last 1 versions']}))
     .pipe(gulp.dest(paths.css.tmp))
     .pipe(browserSync.reload({stream:true}));
 });
 
-gulp.task('css:dist', function () {
+gulp.task('css:dist', ['sass'], function () {
   return gulp.src(paths.css.src)
     .pipe(plumber({errorHandler: handleError}))
     .pipe(sourcemaps.init())
     .pipe(autoprefixer({browsers: ['last 1 versions']}))
     .pipe(concat('all.css'))
-    .pipe(sourcemaps.write('.'))
+    .pipe(minifyCss())
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest(paths.css.dest));
 });
 
 // Compile sass into CSS & auto-inject into browsers
 gulp.task('sass', function() {
-  return gulp.src(paths.sass)
+  return gulp.src(paths.sass.src)
     .pipe(plumber({errorHandler: handleError}))
-    .pipe(sass({style:'expanded'})) // nested, compact, compressed, expanded
-    .pipe(gulp.dest(paths.css.tmp))
-    .pipe(browserSync.reload({ stream:true }));
+    .pipe(sourcemaps.init())
+    .pipe(sass({outputStyle:'compressed'}).on('error', sass.logError)) // nested, compact, compressed, expanded
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(paths.sass.dest));
 });
 
-gulp.task('image:dist', ['clean'], function () {
+gulp.task('image', function () {
   return gulp.src(paths.image.src)
     .pipe(plumber({errorHandler: handleError}))
     .pipe(imagemin({optimizationLevel: 5}))
@@ -181,7 +189,7 @@ gulp.task('svgmin', function () {
     .pipe(gulp.dest(paths.svg.dest));
 });
 
-gulp.task('misc:dist', function () {
+gulp.task('misc', function () {
   return gulp.src([
     '*.{ico,png,txt}',
     '.htaccess',
@@ -204,7 +212,6 @@ gulp.task('watch', function () {
   gulp.watch(['gulpfile.js', paths.js.src], ['jshint'], browserSync.reload);
   //gulp.watch(paths.jstest, ['jstest']);
   gulp.watch(paths.css.src, ['css:tmp']);
-  gulp.watch(paths.sass, ['sass']);
 });
 
 gulp.task('serve', ['jshint', 'css:tmp', 'sass'], function () {
@@ -257,15 +264,15 @@ gulp.task('build', function (done) {
   runSequence(
     'clean',
     [
-      'index',
+      'index:dist',
       'template',
       'js',
-      'css',
-      'svgmin',
+      'css:dist',
       'image',
-      'misc:dist:'
+      'svgmin',
+      'misc'
     ],
     done);
 });
 
-gulp.task('default', ['serve']);
+gulp.task('default', ['build']);

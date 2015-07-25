@@ -98,9 +98,7 @@ object PlayGulpPlugin extends AutoPlugin {
       val gulpfileName = (gulpFile in Compile).value
       val isForceEnabled = (forceGulp in Compile).value
       val result = runGulp(base, gulpfileName, List("clean"), isForceEnabled = isForceEnabled).exitValue()
-      if (result == 0) {
-        result
-      } else throw new Exception("gulp failed")
+      if (result != 0) throw new Exception("gulp failed")
     },
 
     gulpBuild := {
@@ -113,7 +111,7 @@ object PlayGulpPlugin extends AutoPlugin {
       } else throw new Exception("gulp failed")
     },
 
-    compile <<= compile dependsOn gulpBuild,
+    (compile in Compile) <<= (compile in Compile) dependsOn gulpBuild,
 
     dist <<= dist dependsOn gulpBuild,
 
