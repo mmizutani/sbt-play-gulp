@@ -80,9 +80,9 @@ object PlayGulpPlugin extends AutoPlugin {
     commands <++= baseDirectory {
       base =>
         Seq(
-          //"gulp",
+          "npm",
           "bower",
-          "npm"
+          "yo"
         ).map(cmd(_, base))
     },
 
@@ -111,8 +111,6 @@ object PlayGulpPlugin extends AutoPlugin {
       } else throw new Exception("gulp failed")
     },
 
-    (compile in Compile) <<= (compile in Compile) dependsOn gulpBuild,
-
     dist <<= dist dependsOn gulpBuild,
 
     stage <<= stage dependsOn gulpBuild,
@@ -120,7 +118,7 @@ object PlayGulpPlugin extends AutoPlugin {
     clean <<= clean dependsOn gulpClean,
 
     // Add the views to the dist
-    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist" /*"app"*/),
+    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist"),
   
     // Run gulp before sbt run
     playRunHooks <+= (gulpDirectory, gulpFile, forceGulp).map {

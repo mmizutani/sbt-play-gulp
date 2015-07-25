@@ -1,5 +1,0 @@
-/** bootstrap を使用した際に、AngularJS の ng-cloak, ng-hide が有効となるようにするパッチ。 */
-#body [ng-cloak],
-#body .ng-hide {
-    display: none !important;
-}

@@ -51,9 +51,11 @@ object DevAssets extends Controller {
   val runtimeDirs = Play.configuration.getStringList("gulp.devDirs")
   val basePaths: List[java.io.File] = runtimeDirs match {
     case Some(dirs) => dirs.asScala.map(Play.application.getFile).toList
-    case None => List(Play.application.getFile("ui/.tmp"), Play.application.getFile("ui/app"),
-      //added ui to defaults since the newer projects have bower_components in ui directory instead of ui/app/components
-      Play.application.getFile("ui"))
+    case None => List(
+      Play.application.getFile("ui/.tmp/serve"),
+      Play.application.getFile("ui/src"),
+      Play.application.getFile("ui")
+    )
   }
 
   /**
