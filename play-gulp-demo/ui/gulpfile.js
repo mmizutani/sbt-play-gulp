@@ -1,13 +1,13 @@
 'use strict';
 
-var gulp = require("gulp");
+var gulp = require('gulp');
 var inject = require('gulp-inject');
-var concat = require("gulp-concat");
-var uglify = require("gulp-uglify");
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
+var changed = require('gulp-changed');
 var ngAnnotate = require('gulp-ng-annotate');
 var ngHtml2Js = require('gulp-ng-html2js');
 var minifyHtml = require('gulp-minify-html');
-//var minifyCss = require('gulp-minify-css');
 var jshint = require('gulp-jshint');
 var rev = require('gulp-rev');
 var imagemin = require('gulp-imagemin');
@@ -19,40 +19,45 @@ var browserSync = require('browser-sync');
 var gutil = require('gulp-util');
 var del = require('del');
 
-var yeoman = {
-  // configurable paths
-  app: require('./bower.json').appPath || 'app',
-  dist: 'dist'
+/**
+ * newer jshint
+ * test
+ * rev
+ **/
+
+var dirs = {
+  app: './app',
+  dist: './dist'
 };
 
 var paths = {
   template: {
-    src: ['<%= yeoman.app %>/*.html', '<%= yeoman.app %>/views/{,*/}*.html'],
-    dest: ['<%= yeoman.dist %>']
+    src: [dirs.app+'/*.html', dirs.app+'/views/{,*/}*.html'],
+    dest: dirs.dist
   },
   js: {
-    src: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-    dest: ['<%= yeoman.dist %>/scripts']
+    src: [dirs.app+'/scripts/{,*/}*.js'],
+    dest: dirs.dist+'/scripts'
   },
   jstest: ['test/spec/{,*/}*.js'],
   css: {
-    src: ['<%= yeoman.app %>/styles/{,*/}*.css'],
-    dest: ['<%= yeoman.dist %>/styles']
+    src: [dirs.app+'/styles/{,*/}*.css'],
+    dest: dirs.dist+'/styles'
   },
-  lint: ['gulpfile.js', '<%= yeoman.app %>/scripts/{,*/}*.js'],
+  lint: ['gulpfile.js', dirs.app+'/scripts/{,*/}*.js'],
   indexhtml: {
-    src: ['<%= yeoman.app %>/index.html'],
-    dest: ['<%= yeoman.dist %>']
+    src: [dirs.app+'/index.html'],
+    dest: dirs.dist
   },
   image: {
-    src: ['<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'],
-    dest: ['<%= yeoman.dist %>/images']
+    src: [dirs.app+'/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'],
+    dest: dirs.dist+'/images'
   },
   svg: {
-    src: ['<%= yeoman.app %>/images/{,*/}*.svg'],
-    dest: ['<%= yeoman.dist %>/images']
+    src: [dirs.app+'/images/{,*/}*.svg'],
+    dest: dirs.dist+'/images'
   },
-  watch: ['<%= yeoman.app %>/{,*/}*.html', '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}']
+  watch: [dirs.app+'/{,*/}*.html', dirs.app+'/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}']
 };
 
 var handleError = function (err) {
@@ -61,12 +66,13 @@ var handleError = function (err) {
   this.emit('end');
 };
 
-gulp.task('clean', function (cb) {
-  del(['<%= yeoman.dist %>/*'], cb);
-});
+gulp.task('clean', del.bind(null, [dirs.dist]));
+//gulp.task('clean', function (cb) {
+//  del([dirs.dist], cb);
+//});
 
 gulp.task('template', function () {
-  gulp.src(paths.template.src)
+  return gulp.src(paths.template.src)
     .pipe(plumber({errorHandler: handleError}))
     .pipe(minifyHtml({
       empty: true,
@@ -83,31 +89,34 @@ gulp.task('template', function () {
 });
 
 gulp.task('bowerinject', function () {
-  gulp.src(paths.indexhtml.src)
+  return gulp.src(paths.indexhtml.src)
+    .pipe(plumber({errorHandler: handleError}))
     // It's not necessary to read the files (will speed up things), we're only after their paths:
-    .pipe(inject(gulp.src([paths.js, paths.css], {read: false})))
+    .pipe(inject(gulp.src([paths.js.src, paths.css.src], {read: false})))
     .pipe(gulp.dest(paths.indexhtml.dest));
 });
 
 gulp.task('lint', function () {
-  gulp.src(paths.lint)
-    .pipe(jshint())
+  return gulp.src(paths.lint)
+    .pipe(jshint('.jshintrc'))
     .pipe(jshint.reporter('jshint-stylish'));
 });
 
 gulp.task('js', ['clean'], function () {
-  gulp.src(paths.js.src)
+  return gulp.src(paths.js.src)
     .pipe(plumber({errorHandler: handleError}))
-    //.pipe(coffee())
+    .pipe(sourcemaps.init())
     .pipe(changed(paths.js.dest))
     .pipe(ngAnnotate())
     .pipe(concat('app.min.js'))
     .pipe(uglify())
+    .pipe(sourcemaps.write('.'))
     .pipe(gulp.dest(paths.js.dest));
 });
 
 gulp.task('css', function () {
-  gulp.src(paths.css.src)
+  return gulp.src(paths.css.src)
+    .pipe(plumber({errorHandler: handleError}))
     .pipe(sourcemaps.init())
     .pipe(autoprefixer({browsers: ['last 1 versions']}))
     .pipe(concat('all.css'))
@@ -116,13 +125,14 @@ gulp.task('css', function () {
 });
 
 gulp.task('css:svgmin', function () {
-  gulp.src(paths.svg.src)
+  return gulp.src(paths.svg.src)
     .pipe(svgmin())
     .pipe(gulp.dest(paths.svg.dest));
 });
 
 gulp.task('image', ['clean'], function () {
-  gulp.src(paths.image.src)
+  return gulp.src(paths.image.src)
+    .pipe(plumber({errorHandler: handleError}))
     .pipe(imagemin({optimizationLevel: 5}))
     .pipe(rev())
     .pipe(gulp.dest(paths.image.dest));

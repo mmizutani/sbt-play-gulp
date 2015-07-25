@@ -15,4 +15,3 @@ tmp
 /.settings
 activator-sbt-*-shim.sbt
 node_modules
-public/bower_components
