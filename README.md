@@ -75,4 +75,4 @@ When compilation or testing takes place, the `PlayGulpPlugin` runs all required 
 
 
 ## Demo
-To see the plugin in action and how to configure the gulpfile.js, please see and run this Gulp-enabled [example Play application](https://github.com/mmizutani/sbt-play-gulp/tree/master/play-gulp-demo).
+To see the plugin in action and how to configure the gulpfile.js, please see and run this Gulp-enabled [example Play application](https://github.com/mmizutani/play-gulp-demo).
