@@ -1,6 +1,8 @@
 'use strict';
 
 var gulp = require('gulp');
+//var plugins = require('gulp-load-plugins')();
+var bowerFiles = require('main-bower-files');
 var inject = require('gulp-inject');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -14,50 +16,54 @@ var imagemin = require('gulp-imagemin');
 var svgmin = require('gulp-svgmin');
 var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
+var sass = require('gulp-sass');
 var plumber = require('gulp-plumber');
 var browserSync = require('browser-sync');
 var gutil = require('gulp-util');
 var del = require('del');
+var runSequence = require('run-sequence'); // Temporary solution until gulp 4 release https://github.com/gulpjs/gulp/issues/355
+var merge = require('event-stream').merge;
 
 /**
  * newer jshint
- * test
+ * test karma
  * rev
+ * usemin
+ * add plumber to all
  **/
 
 var dirs = {
   app: './app',
+  tmp: './.tmp',
   dist: './dist'
 };
 
 var paths = {
   template: {
-    src: [dirs.app+'/*.html', dirs.app+'/views/{,*/}*.html'],
+    src: [dirs.app+'/*.html', dirs.app+'/views/**/*.html'],
     dest: dirs.dist
   },
   js: {
-    src: [dirs.app+'/scripts/{,*/}*.js'],
+    src: dirs.app+'/scripts/**/*.js',
     dest: dirs.dist+'/scripts'
   },
-  jstest: ['test/spec/{,*/}*.js'],
+  jstest: 'test/spec/**/*.js',
   css: {
-    src: [dirs.app+'/styles/{,*/}*.css'],
+    src: dirs.app+'/styles/**/*.css',
+    tmp: dirs.tmp+'/styles',
     dest: dirs.dist+'/styles'
   },
-  lint: ['gulpfile.js', dirs.app+'/scripts/{,*/}*.js'],
-  indexhtml: {
-    src: [dirs.app+'/index.html'],
-    dest: dirs.dist
-  },
+  sass: dirs.app+'/styles/**/*.sass',
+  jshint: ['gulpfile.js', dirs.app+'/scripts/{,*/}*.js'],
+  index: dirs.app+'/index.html',
   image: {
-    src: [dirs.app+'/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'],
+    src: dirs.app+'/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
     dest: dirs.dist+'/images'
   },
   svg: {
-    src: [dirs.app+'/images/{,*/}*.svg'],
+    src: dirs.app+'/images/**/*.svg',
     dest: dirs.dist+'/images'
-  },
-  watch: [dirs.app+'/{,*/}*.html', dirs.app+'/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}']
+  }
 };
 
 var handleError = function (err) {
@@ -66,12 +72,12 @@ var handleError = function (err) {
   this.emit('end');
 };
 
-gulp.task('clean', del.bind(null, [dirs.dist]));
-//gulp.task('clean', function (cb) {
-//  del([dirs.dist], cb);
-//});
+gulp.task('clean', del.bind(null, [dirs.tmp, dirs.dist], {force:true}));
+gulp.task('clean2', function(cb) {
+  del([dirs.tmp, dirs.dist], {force:true}, cb);
+});
 
-gulp.task('template', function () {
+gulp.task('template:dist', function () {
   return gulp.src(paths.template.src)
     .pipe(plumber({errorHandler: handleError}))
     .pipe(minifyHtml({
@@ -88,18 +94,26 @@ gulp.task('template', function () {
     .pipe(gulp.dest(paths.template.dest));
 });
 
-gulp.task('bowerinject', function () {
-  return gulp.src(paths.indexhtml.src)
+gulp.task('index', function () {
+  return gulp.src(paths.index)
     .pipe(plumber({errorHandler: handleError}))
     // It's not necessary to read the files (will speed up things), we're only after their paths:
-    .pipe(inject(gulp.src([paths.js.src, paths.css.src], {read: false})))
-    .pipe(gulp.dest(paths.indexhtml.dest));
+    .pipe(inject(gulp.src([paths.js.src, paths.css.src], {read: false}), {relative: true}))
+    .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
+    .pipe(gulp.dest(dirs.src));
 });
 
-gulp.task('lint', function () {
-  return gulp.src(paths.lint)
+gulp.task('index:dist', function () {
+  return gulp.src(paths.index)
+    .pipe(gulp.dest(dirs.dist));
+});
+
+gulp.task('jshint', function () {
+  return gulp.src(paths.jshint)
+    .pipe(plumber({errorHandler: handleError}))
     .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter('jshint-stylish'));
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
 });
 
 gulp.task('js', ['clean'], function () {
@@ -114,7 +128,26 @@ gulp.task('js', ['clean'], function () {
     .pipe(gulp.dest(paths.js.dest));
 });
 
-gulp.task('css', function () {
+gulp.task('foo', function() {
+  return merge(
+    gulp.src('src/*.coffee')
+      //.pipe(coffee())
+      .pipe(gulp.dest('js/')),
+
+    gulp.src('src/*.less')
+      //.pipe(less())
+      .pipe(gulp.dest('css/'))
+  );
+});
+
+gulp.task('css:tmp', function () {
+  return gulp.src(paths.css.src)
+    .pipe(autoprefixer({browsers: ['last 1 versions']}))
+    .pipe(gulp.dest(paths.css.tmp))
+    .pipe(browserSync.reload({stream:true}));
+});
+
+gulp.task('css:dist', function () {
   return gulp.src(paths.css.src)
     .pipe(plumber({errorHandler: handleError}))
     .pipe(sourcemaps.init())
@@ -124,13 +157,16 @@ gulp.task('css', function () {
     .pipe(gulp.dest(paths.css.dest));
 });
 
-gulp.task('css:svgmin', function () {
-  return gulp.src(paths.svg.src)
-    .pipe(svgmin())
-    .pipe(gulp.dest(paths.svg.dest));
+// Compile sass into CSS & auto-inject into browsers
+gulp.task('sass', function() {
+  return gulp.src(paths.sass)
+    .pipe(plumber({errorHandler: handleError}))
+    .pipe(sass({style:'expanded'})) // nested, compact, compressed, expanded
+    .pipe(gulp.dest(paths.css.tmp))
+    .pipe(browserSync.reload({ stream:true }));
 });
 
-gulp.task('image', ['clean'], function () {
+gulp.task('image:dist', ['clean'], function () {
   return gulp.src(paths.image.src)
     .pipe(plumber({errorHandler: handleError}))
     .pipe(imagemin({optimizationLevel: 5}))
@@ -138,23 +174,50 @@ gulp.task('image', ['clean'], function () {
     .pipe(gulp.dest(paths.image.dest));
 });
 
-gulp.task('watch', function () {
-  gulp.watch(paths.js.src, ['js']);
-  gulp.watch(paths.image.src, ['image']);
+gulp.task('svgmin', function () {
+  return gulp.src(paths.svg.src)
+    .pipe(plumber({errorHandler: handleError}))
+    .pipe(svgmin())
+    .pipe(gulp.dest(paths.svg.dest));
 });
 
-gulp.task('serve', function () {
+gulp.task('misc:dist', function () {
+  return gulp.src([
+    '*.{ico,png,txt}',
+    '.htaccess',
+    '*.html',
+    'views/{,*/}*.html',
+    'bower_components/**/*',
+    'images/{,*/}*.{webp}',
+    'fonts/*'
+  ], {
+    cwd: dirs.app, // base directory to copy files from
+    base: dirs.app, // needed to keep directory structures (https://github.com/gulpjs/gulp/issues/151#issuecomment-41508551)
+    dot: true // include hidden files
+  })
+    .pipe(gulp.dest(dirs.dist));
+});
+
+// Triggered by sbt run command
+gulp.task('watch', function () {
+  gulp.watch([paths.template.src, paths.image.src], browserSync.reload);
+  gulp.watch(['gulpfile.js', paths.js.src], ['jshint'], browserSync.reload);
+  //gulp.watch(paths.jstest, ['jstest']);
+  gulp.watch(paths.css.src, ['css:tmp']);
+  gulp.watch(paths.sass, ['sass']);
+});
+
+gulp.task('serve', ['jshint', 'css:tmp', 'sass'], function () {
   browserSync({
-    // By default, Play is listening on port 9000
-    proxy: 'localhost:9000',
-    // We will set BrowserSync on the port 9001
-    port: 9001,
-    // Reload all assets
-    // Important: you need to specify the path on your source code
-    // not the path on the url
-    files: ['public/stylesheets/*.css', 'public/javascripts/*.js', 'app/views/*.html'],
-    open: false
+    server: {
+      baseDir: './app'
+    }
   });
+  gulp.watch([paths.template.src, paths.image.src], browserSync.reload);
+  gulp.watch(['gulpfile.js', paths.js.src], ['jshint'], browserSync.reload);
+  //gulp.watch(paths.jstest, ['jstest']);
+  gulp.watch(paths.css.src, ['css:tmp']);
+  gulp.watch(paths.sass, ['sass']);
 });
 
 //gulp.task('test', [
@@ -165,31 +228,44 @@ gulp.task('serve', function () {
 //  'karma'
 //]);
 
-gulp.task('build', [
-  'clean',
-  'bowerinject',
-  'template',
-  'js',
-  'css',
-  'css:svgmin',
-  'image'
-  //'clean:dist',
-  //'bower-install',
-  //'useminPrepare',
-  //'concurrent:dist',
-  //'autoprefixer',
-  //'concat',
-  //'ngmin',
-  //'copy:dist',
-  //'cdnify',
-  //'cssmin',
-  //'uglify',
-  //'rev',
-  //'usemin'
-]);
+//gulp.task('build', [
+//  'clean',
+//  'index',
+//  'template',
+//  'js',
+//  'css',
+//  'svgmin',
+//  'image',
+//  'misc:dist:'
+//  //'clean:dist',
+//  //'bower-install',
+//  //'useminPrepare',
+//  //'concurrent:dist',
+//  //'autoprefixer',
+//  //'concat',
+//  //'ngmin',
+//  //'copy:dist',
+//  //'cdnify',
+//  //'cssmin',
+//  //'uglify',
+//  //'rev',
+//  //'usemin'
+//]);
 
-gulp.task('default', [
-  //'newer:jshint',
-  //'test',
-  'build'
-]);
+// Triggered by sbt compile, stage and dist commands
+gulp.task('build', function (done) {
+  runSequence(
+    'clean',
+    [
+      'index',
+      'template',
+      'js',
+      'css',
+      'svgmin',
+      'image',
+      'misc:dist:'
+    ],
+    done);
+});
+
+gulp.task('default', ['serve']);

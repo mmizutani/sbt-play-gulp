@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -10,12 +10,17 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+    <!-- inject:css -->
+    <!-- endinject -->
+
     <!-- build:css(.) styles/vendor.css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
     <!-- bower:css -->
     <!-- endbower -->
     <!-- endbuild -->
-    <!-- build:css({app}) styles/main.css -->
+
+    <!-- build:css({.tmp,app}) styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
@@ -25,16 +30,19 @@
     <![endif]-->
 
     <div class="header">
-        <ul class="nav nav-pills pull-right">
-            <li class="active"><a ng-href="#/">Angular Page</a></li>
-            <li><a ng-href="#/myhome">Angular View</a></li>
-            <li><a ng-href="#/templ">Play Template</a></li>
-        </ul>
-        <h3 class="text-muted">ui</h3>
+      <ul class="nav nav-pills pull-right">
+        <li class="active"><a ng-href="#/">Angular Page</a></li>
+        <li><a ng-href="#/myhome">Angular View</a></li>
+        <li><a ng-href="#/templ">Play Template</a></li>
+      </ul>
+      <h3 class="text-muted">ui</h3>
     </div>
 
     <!-- Add your site or application content here -->
     <div class="container" ng-view=""></div>
+
+    <!-- inject:js -->
+    <!-- endinject -->
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
@@ -50,7 +58,7 @@
     <!-- endbower -->
     <!-- endbuild -->
 
-    <!-- build:js({app}) scripts/scripts.js -->
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
     <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/myhome.js"></script>

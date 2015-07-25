@@ -41,12 +41,8 @@ object Gulp extends Controller {
 
 }
 
-/**
- * Class added to support injected route generator (Play 2.4 onwards)
- */
 class Gulp extends Controller {
   def index = Gulp.index
-
   def redirectRoot(base: String = "/ui/") = Gulp.redirectRoot(base)
 }
 

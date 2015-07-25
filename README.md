@@ -9,7 +9,7 @@ This plugin allows you to:
 - Automatically run various user-defined gulp tasks such as JavaScript obfuscation, css concatenation and CDNification on the `compile`, `run`, `stage`, `dist` and `clean` stages.
 - Manually run the npm, bower and gulp commands inside the Play sbt console.
 
-## For Whom and Why
+## For Whom and Why Gulp not Grunt
 
 This plugin is assumed to be mainly for those who have been familiar with Gulp and would like to utilize Gulp instead of the official web-jar ecosystem for static asset compilation in Play Framework. Play Gulp Plugin is largely a modification of the [play-yeoman plugin](https://github.com/tuplejump/play-yeoman), which uses Grunt rather than Gulp. I created this custom plugin after having found that Gulp configuration is more streamlined and easier to use compared with Grunt.
 
@@ -54,8 +54,25 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
   ```
   You will see the compiled app at http://localhost:9000/, which is redirected to http://localhost:9000/ui/ serving static web assets located in the ui/app directory in the dev run mode and in the ui/dist directory in the production start mode.
 
-Built upon the SBT AutoPlugin architecture, the Play Gulp plugin adds itself automatically to projects that have the sbt-play plugin enabled once you add it in `project/plugins.sbt`. It is not necessary to manually add `enablePlugins(PlayGulpPlugin)` to `build.sbt`.
+
+## How This Works
+With this plugin, play-sbt build lifecycle triggers the corresponding gulp tasks:
+
+| SBT Commands     |    | Gulp Tasks   |
+| ---------------- | -- | ------------ |
+| `sbt gulp <arg>` | -> | `gulp <arg>` |
+| `sbt run`        | -> | `gulp watch` |
+| `sbt compile`    | -> | `gulp build` |
+| `sbt stage`      | -> | `gulp build` |
+| `sbt dist`       | -> | `gulp build` |
+| `sbt clean`      | -> | `gulp clean` |
+
+So make sure that the gulpfile.js in the `ui` directory of your Play project implements the `watch`, `build` and `clean` tasks.
+
+Built upon SBT's [auto plugin](http://www.scala-sbt.org/0.13/docs/Plugins.html) architecture, the Play Gulp plugin adds itself automatically to projects that have the sbt-play plugin enabled once you add it in `project/plugins.sbt`. It is not necessary to manually add `enablePlugins(PlayGulpPlugin)` to `build.sbt` of your Play project.
 
 When compilation or testing takes place, the `PlayGulpPlugin` runs all required tasks on your Play projects and copies the processed files into the web assets jar (`target/scala-2.11/<play-project-name>_2.11-x.x.x-web-assets.jar/META-INF/webjars/x.x.x/***`).
 
-To see the plugin in action, you can clone and run this Gulp-enabled [example Play application](https://github.com/mmizutani/sbt-play-gulp/tree/master/play-gulp-demo).
+
+## Demo
+To see the plugin in action and how to configure the gulpfile.js, please see and run this Gulp-enabled [example Play application](https://github.com/mmizutani/sbt-play-gulp/tree/master/play-gulp-demo).

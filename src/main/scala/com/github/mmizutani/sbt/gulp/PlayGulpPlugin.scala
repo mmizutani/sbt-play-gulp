@@ -39,8 +39,8 @@ object Import {
     lazy val gulpFile = SettingKey[String]("gulp-file", "gulpfile")
     lazy val gulpExcludes = SettingKey[Seq[String]]("gulp-excludes")
     lazy val forceGulp = SettingKey[Boolean]("force-gulp", "key to enable/disable gulp tasks with force option")
-    lazy val gulpRun = InputKey[Unit]("gulp", "Task to run gulp")
-    lazy val gulpDist = TaskKey[Int]("gulp-dist", "Task to run dist gulp")
+    lazy val gulp = InputKey[Unit]("gulp", "Task to run gulp")
+    lazy val gulpBuild = TaskKey[Int]("gulp-dist", "Task to run dist gulp")
     lazy val gulpClean = TaskKey[Unit]("gulp-clean", "Task to run gulp clean")
   }
 }
@@ -59,20 +59,7 @@ object PlayGulpPlugin extends AutoPlugin {
   import autoImport._
   import PlayGulpKeys._
 
-  /**
-   * Provides default settings
-   */
   override lazy val projectSettings: Seq[Setting[_]] = playGulpSettings ++ withTemplates
-
-  /**
-   * Define if the plugin needs to append settings at the build-level (in ThisBuild)
-   */
-  override lazy val buildSettings: Seq[Setting[_]] = Nil
-
-  /**
-   * Define if the plugin needs to append settings at the global-level (in Global)
-   */
-  override lazy val globalSettings: Seq[Setting[_]] = Nil
 
   /**
    * Main plugin settings which add gulp commands to sbt tasks
@@ -99,7 +86,7 @@ object PlayGulpPlugin extends AutoPlugin {
         ).map(cmd(_, base))
     },
 
-    gulpRun := {
+    gulp := {
       val base = (gulpDirectory in Compile).value
       val gulpfileName = (gulpFile in Compile).value
       val isForceEnabled = (forceGulp in Compile).value
@@ -111,34 +98,35 @@ object PlayGulpPlugin extends AutoPlugin {
       val gulpfileName = (gulpFile in Compile).value
       val isForceEnabled = (forceGulp in Compile).value
       val result = runGulp(base, gulpfileName, List("clean"), isForceEnabled = isForceEnabled).exitValue()
-      if (result != 0) throw new Exception("gulp failed")
-//      if (result == 0) {
-//        result
-//      } else throw new Exception("gulp failed")
-    },
-
-    gulpDist := {
-      val base = (gulpDirectory in Compile).value
-      val gulpfileName = (gulpFile in Compile).value
-      val isForceEnabled = (forceGulp in Compile).value
-      val result = runGulp(base, gulpfileName, List("dist"), isForceEnabled = isForceEnabled).exitValue()
       if (result == 0) {
         result
       } else throw new Exception("gulp failed")
     },
 
-    dist <<= dist dependsOn gulpDist,
+    gulpBuild := {
+      val base = (gulpDirectory in Compile).value
+      val gulpfileName = (gulpFile in Compile).value
+      val isForceEnabled = (forceGulp in Compile).value
+      val result = runGulp(base, gulpfileName, List("build"), isForceEnabled = isForceEnabled).exitValue()
+      if (result == 0) {
+        result
+      } else throw new Exception("gulp failed")
+    },
 
-    stage <<= stage dependsOn gulpDist,
+    compile <<= compile dependsOn gulpBuild,
+
+    dist <<= dist dependsOn gulpBuild,
+
+    stage <<= stage dependsOn gulpBuild,
 
     clean <<= clean dependsOn gulpClean,
 
     // Add the views to the dist
-    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist"),
+    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist" /*"app"*/),
   
     // Run gulp before sbt run
     playRunHooks <+= (gulpDirectory, gulpFile, forceGulp).map {
-      (base, fileName, isForceEnabled) => Gulp(base, fileName, isForceEnabled)
+      (base, fileName, isForceEnabled) => GulpWatch(base, fileName, isForceEnabled)
     }
   )
 
@@ -202,7 +190,7 @@ object PlayGulpPlugin extends AutoPlugin {
     }
   }
 
-  object Gulp {
+  object GulpWatch {
 
     def apply(base: File, fileName: String, isForceEnabled: Boolean): PlayRunHook = {
 
