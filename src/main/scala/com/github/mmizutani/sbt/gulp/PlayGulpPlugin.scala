@@ -65,7 +65,7 @@ object PlayGulpPlugin extends AutoPlugin {
    * Main plugin settings which add gulp commands to sbt tasks
    */
   lazy val playGulpSettings: Seq[Def.Setting[_]] = Seq(
-    libraryDependencies ++= Seq("com.github.mmizutani" %% "play-gulp" % "0.0.3" intransitive()),
+    libraryDependencies ++= Seq("com.github.mmizutani" %% "play-gulp" % "0.0.4" intransitive()),
 
     // Where does the UI live?
     gulpDirectory <<= (baseDirectory in Compile) {
@@ -121,7 +121,7 @@ object PlayGulpPlugin extends AutoPlugin {
     clean <<= clean dependsOn gulpClean,
 
     // Add the views to the dist
-    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist"),
+    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "src"),
 
     // Add asset files in ui/src directory to the watch list for auto browser reloading
     watchSources <++= gulpDirectory map { path => ((path / "src") ** "*").get},
