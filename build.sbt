@@ -3,7 +3,6 @@ lazy val `sbt-play-gulp` = (project in file("."))
   .dependsOn(`play-gulp`)
   .settings(
     name := "sbt-play-gulp",
-    version := "0.0.2",
     sbtVersion in Global := "0.13.8",
     sbtPlugin := true,
     addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2"),
@@ -21,7 +20,6 @@ lazy val `play-gulp` = project.in(file("play-gulp"))
   .enablePlugins(PlayScala)
   .settings(
     name := "play-gulp",
-    version := "0.0.2",
     libraryDependencies ++= Seq(),
     scalaVersion := "2.11.6",
     crossScalaVersions := Seq("2.10.4", "2.11.6"),

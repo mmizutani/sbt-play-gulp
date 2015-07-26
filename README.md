@@ -6,7 +6,7 @@
 ## Features
 
 This plugin allows you to:
-- Automatically run various user-defined gulp tasks such as JavaScript obfuscation, css concatenation and CDNification on the `compile`, `run`, `stage`, `dist` and `clean` stages.
+- Automatically run various user-defined gulp tasks such as JavaScript obfuscation, CSS concatenation and CDNification on the `compile`, `run`, `stage`, `dist` and `clean` stages.
 - Manually run the npm, bower and gulp commands inside the Play sbt console.
 
 ## For Whom and Why Gulp not Grunt

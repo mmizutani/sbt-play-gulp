@@ -65,7 +65,7 @@ object PlayGulpPlugin extends AutoPlugin {
    * Main plugin settings which add gulp commands to sbt tasks
    */
   lazy val playGulpSettings: Seq[Def.Setting[_]] = Seq(
-    libraryDependencies ++= Seq("com.github.mmizutani" %% "play-gulp" % "0.0.1" intransitive()),
+    libraryDependencies ++= Seq("com.github.mmizutani" %% "play-gulp" % "0.0.3" intransitive()),
 
     // Where does the UI live?
     gulpDirectory <<= (baseDirectory in Compile) {
@@ -76,7 +76,7 @@ object PlayGulpPlugin extends AutoPlugin {
 
     forceGulp := true,
 
-    // Allow all the specified commands below to be run within sbt
+    // Allow all the specified commands below to be run within sbt in addition to gulp
     commands <++= baseDirectory {
       base =>
         Seq(
@@ -111,14 +111,20 @@ object PlayGulpPlugin extends AutoPlugin {
       } else throw new Exception("gulp failed")
     },
 
+    // Execute `gulp build` before `sbt dist`
     dist <<= dist dependsOn gulpBuild,
 
+    // Execute `gulp build` before `sbt stage`
     stage <<= stage dependsOn gulpBuild,
 
+    // Execute `gulp clean` before `sbt clean`
     clean <<= clean dependsOn gulpClean,
 
     // Add the views to the dist
     unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist"),
+
+    // Add asset files in ui/src directory to the watch list for auto browser reloading
+    watchSources <++= gulpDirectory map { path => ((path / "src") ** "*").get},
   
     // Run gulp before sbt run
     playRunHooks <+= (gulpDirectory, gulpFile, forceGulp).map {
@@ -127,11 +133,11 @@ object PlayGulpPlugin extends AutoPlugin {
   )
 
   val withTemplates = Seq(
-    sourceDirectories in TwirlKeys.compileTemplates in Compile ++= Seq(gulpDirectory.value / "dist"),
+    sourceDirectories in TwirlKeys.compileTemplates in Compile ++= Seq(gulpDirectory.value / "src"),
     gulpExcludes <<= gulpDirectory(yd => Seq(
-      yd + "/dist/bower_components/",
-      yd + "/dist/images/",
-      yd + "/dist/styles/"
+      yd + "/src/app/",
+      yd + "/src/assets/",
+      yd + "/src/bower_components/"
     )),
     excludeFilter in unmanagedSources <<=
       (excludeFilter in unmanagedSources, gulpExcludes) {
