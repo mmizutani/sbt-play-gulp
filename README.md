@@ -15,7 +15,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
 ## How to Use
 
-1. Install npm, bower and gulp if you do not have them.
+1. Install npm, bower and gulp if you do not have them yet.
 
 2. If you do not have any existing Play project, create a plain one like the play-scala template and specify in `<your-project-root>/project/build.properties` the sbt version `sbt.version=0.13.5`, which needs to be 0.13.5 or higher.
 
