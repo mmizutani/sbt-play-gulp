@@ -58,14 +58,14 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 ## How This Works
 With this plugin, play-sbt build lifecycle triggers the corresponding gulp tasks:
 
-| SBT Commands     |    | Gulp Tasks   |
-| ---------------- | -- | ------------ |
-| `sbt gulp <arg>` | => | `gulp <arg>` |
-| `sbt run`        | => | `gulp watch` |
-| `sbt compile`    | => | `gulp build` |
-| `sbt stage`      | => | `gulp build` |
-| `sbt dist`       | => | `gulp build` |
-| `sbt clean`      | => | `gulp clean` |
+SBT Commands     | Gulp Tasks
+---------------- | ------------
+`sbt gulp <arg>` | `gulp <arg>`
+`sbt run`        | `gulp watch`
+`sbt compile`    | `gulp build`
+`sbt stage`      | `gulp build`
+`sbt dist`       | `gulp build`
+`sbt clean`      | `gulp clean`
 
 So make sure that the gulpfile.js in the `ui` directory of your Play project implements the `watch`, `build` and `clean` tasks.
 
