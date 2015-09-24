@@ -121,7 +121,7 @@ object PlayGulpPlugin extends AutoPlugin {
     clean <<= clean dependsOn gulpClean,
 
     // Add the views to the dist
-    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "src"),
+    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist"),
 
     // Add asset files in ui/src directory to the watch list for auto browser reloading
     watchSources <++= gulpDirectory map { path => ((path / "src") ** "*").get},
