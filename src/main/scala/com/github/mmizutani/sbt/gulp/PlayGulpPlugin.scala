@@ -120,8 +120,9 @@ object PlayGulpPlugin extends AutoPlugin {
     // Execute `gulp clean` before `sbt clean`
     clean <<= clean dependsOn gulpClean,
 
-    // Add the views to the dist
-    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "src"),
+    // Ensures that static assets in the ui/dist directory are packaged into
+    // target/scala-2.11/play-gulp_2.11-1.0.0-web-asset.jar/public when the play app is compiled
+    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist"),
 
     // Add asset files in ui/src directory to the watch list for auto browser reloading
     watchSources <++= gulpDirectory map { path => ((path / "src") ** "*").get},
