@@ -5,7 +5,7 @@ lazy val `sbt-play-gulp` = (project in file("."))
     name := "sbt-play-gulp",
     sbtVersion in Global := "0.13.8",
     sbtPlugin := true,
-    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2"),
+    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.3"),
     addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.2.2"),
     organization := "com.github.mmizutani",
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
