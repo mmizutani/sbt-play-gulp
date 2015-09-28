@@ -3,6 +3,10 @@
 
 **SBT Play Gulp Plugin** is an SBT plugin which allows you to use Gulp for static assets compilation in Play Framework projects.
 
+## Change Logs: Sonatype Releases
+
+v0.0.5  Fixed [a bug](https://github.com/mmizutani/sbt-play-gulp/pull/1) concerning the path to the compiled static assets.
+
 ## Features
 
 This plugin allows you to:
