@@ -3,6 +3,8 @@
 
 **SBT Play Gulp Plugin** is an SBT plugin which allows you to use Gulp for static assets compilation in Play Framework projects.
 
+If you do not like to have your Play app depend on someone else's sbt plugin, [play-gulp-standalone](https://github.com/mmizutani/play-gulp-standalone) might be a better fit for you.
+
 ## Change Logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
