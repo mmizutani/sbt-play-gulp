@@ -8,6 +8,7 @@ If you do not like to have your Play app depend on someone else's sbt plugin, [p
 ## Change Logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
+* v0.0.6 Bumped up the Play sbt plugin version from 2.4.2 to 2.4.3.
 * v0.0.5 Fixed [a bug](https://github.com/mmizutani/sbt-play-gulp/pull/1) concerning the path to the compiled static assets.
 
 ## Features

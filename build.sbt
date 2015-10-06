@@ -21,8 +21,8 @@ lazy val `play-gulp` = project.in(file("play-gulp"))
   .settings(
     name := "play-gulp",
     libraryDependencies ++= Seq(),
-    scalaVersion := "2.11.6",
-    crossScalaVersions := Seq("2.10.4", "2.11.6"),
+    scalaVersion := "2.11.7",
+    crossScalaVersions := Seq("2.10.4", "2.11.7"),
     organization := "com.github.mmizutani",
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
     homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp")),

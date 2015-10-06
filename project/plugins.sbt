@@ -5,10 +5,11 @@ resolvers ++= Seq(
   Resolver.sonatypeRepo("snapshots"),
   Resolver.sonatypeRepo("releases"),
   Resolver.typesafeRepo("snapshots"),
-  Resolver.typesafeRepo("releases")
+  Resolver.typesafeRepo("releases"),
+  "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 )
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.3")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.2.2")
 
