@@ -3,11 +3,12 @@
 
 **SBT Play Gulp Plugin** is an SBT plugin which allows you to use Gulp for static assets compilation in Play Framework projects.
 
-If you do not like to have your Play app depend on someone else's sbt plugin, [play-gulp-standalone](https://github.com/mmizutani/play-gulp-standalone) might be a better fit for you.
+If you do not like your Play app to depend on any sbt plugin, [play-gulp-standalone](https://github.com/mmizutani/play-gulp-standalone) might be a better fit for you.
 
 ## Change Logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
+* v0.0.7 Add jspm command - You can now execute jspm in the sbt console.
 * v0.0.6 Bumped up the Play sbt plugin version from 2.4.2 to 2.4.3.
 * v0.0.5 Fixed [a bug](https://github.com/mmizutani/sbt-play-gulp/pull/1) concerning the path to the compiled static assets.
 
@@ -16,6 +17,9 @@ If you do not like to have your Play app depend on someone else's sbt plugin, [p
 This plugin allows you to:
 - Automatically run various user-defined gulp tasks such as JavaScript obfuscation, CSS concatenation and CDNification on the `compile`, `run`, `stage`, `dist` and `clean` stages.
 - Manually run the npm, bower and gulp commands inside the Play sbt console.
+
+## Demo
+To see the plugin in action and how to configure the gulpfile.js, please see and run this Gulp-enabled [example Play application](https://github.com/mmizutani/play-gulp-demo).
 
 ## For Whom and Why Gulp not Grunt
 
@@ -82,5 +86,15 @@ Built upon SBT's [auto plugin](http://www.scala-sbt.org/0.13/docs/Plugins.html) 
 When compilation or testing takes place, the `PlayGulpPlugin` runs all required tasks on your Play projects and copies the processed files into the web assets jar (`target/scala-2.11/<play-project-name>_2.11-x.x.x-web-assets.jar/META-INF/webjars/x.x.x/***`).
 
 
-## Demo
-To see the plugin in action and how to configure the gulpfile.js, please see and run this Gulp-enabled [example Play application](https://github.com/mmizutani/play-gulp-demo).
+## For Developers
+
+### How to publish cross-compiled binaries to the Sonatype repository
+```sh
+$ echo 'version in ThisBuild := "x.x.x"' > ./version.sbt
+$ sbt
+> pgp-cmd gen-key
+> ;project play-gulp;+update;+compile;+stage;+publishLocal
+> ;+update;+compile;+stage;+publishLocal
+$ sbt publishSigned
+$ sbt "+publishSigned"
+```
