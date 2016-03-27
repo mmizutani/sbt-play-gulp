@@ -50,7 +50,6 @@ object PlayGulpPlugin extends AutoPlugin {
   val autoImport = Import
 
   /** This plugin requires the sbt Play plugin to be enabled */
-  //override def requires = plugins.JvmPlugin
   override def requires = Play
 
   /** If all requirements are met, this plugin will automatically get enabled */

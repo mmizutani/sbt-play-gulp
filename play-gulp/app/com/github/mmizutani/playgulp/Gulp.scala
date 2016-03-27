@@ -10,7 +10,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.JavaConverters._
 
 object Gulp extends Controller {
-
   def index = Action.async {
     request =>
       if (request.path.endsWith("/")) {
@@ -19,7 +18,6 @@ object Gulp extends Controller {
         Future(Redirect(request.path + "/"))
       }
   }
-
 
   def redirectRoot(base: String = "/ui/") = Action {
     request =>
@@ -37,8 +35,6 @@ object Gulp extends Controller {
   lazy val atHandler: String => Action[AnyContent] = if (Play.isProd) assetHandler(_: String) else DevAssets.assetHandler(_: String)
 
   def at(file: String): Action[AnyContent] = atHandler(file)
-
-
 }
 
 class Gulp extends Controller {

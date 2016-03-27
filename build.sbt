@@ -3,9 +3,9 @@ lazy val `sbt-play-gulp` = (project in file("."))
   .dependsOn(`play-gulp`)
   .settings(
     name := "sbt-play-gulp",
-    sbtVersion in Global := "0.13.8",
+    sbtVersion in Global := "0.13.11",
     sbtPlugin := true,
-    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.4"),
+    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.0"),
     addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.2.2"),
     organization := "com.github.mmizutani",
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
@@ -21,8 +21,8 @@ lazy val `play-gulp` = project.in(file("play-gulp"))
   .settings(
     name := "play-gulp",
     libraryDependencies ++= Seq(),
-    scalaVersion := "2.11.7",
-    crossScalaVersions := Seq("2.10.4", "2.11.7"),
+    scalaVersion := "2.11.8",
+    crossScalaVersions := Seq("2.10.4", "2.11.8"),
     organization := "com.github.mmizutani",
     licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
     homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp")),
