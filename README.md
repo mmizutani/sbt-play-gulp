@@ -1,4 +1,4 @@
-# SBT Play Gulp Plugin
+# SBT Play Gulp Plugin [![Build Status](https://travis-ci.org/mmizutani/sbt-play-gulp.svg?branch=master)](https://travis-ci.org/mmizutani/sbt-play-gulp)
 > Gulp Asset Pipeline for Play Framework
 
 **SBT Play Gulp Plugin** is an SBT plugin which allows you to use Gulp for static assets compilation in Play Framework projects.
@@ -8,9 +8,16 @@ If you do not like your Play app to depend on any sbt plugin, [play-gulp-standal
 ## Change Logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
-* v0.0.7 Add jspm command - You can now execute jspm in the sbt console.
+* v0.1.0 Added support for Play 2.5 and dropped support for Scala 2.10.
+* v0.0.7 Added jspm command - You can now execute jspm in the sbt console.
 * v0.0.6 Bumped up the Play sbt plugin version from 2.4.2 to 2.4.3.
-* v0.0.5 Fixed [a bug](https://github.com/mmizutani/sbt-play-gulp/pull/1) concerning the path to the compiled static assets.
+* v0.0.5 Fixed a bug concerning the path to the compiled static assets.
+
+| Plugin version | Play version | Scala version |
+|----------------|--------------|---------------|
+| 0.1.0          | 2.5.x        | 2.11.x        |
+| - 0.0.7        | 2.4.x        | 2.10.x/2.11.x |
+
 
 ## Features
 
@@ -19,7 +26,7 @@ This plugin allows you to:
 - Manually run the npm, bower and gulp commands inside the Play sbt console.
 
 ## Demo
-To see the plugin in action and how to configure the gulpfile.js, please see and run this Gulp-enabled [example Play application](https://github.com/mmizutani/play-gulp-demo).
+To see the plugin in action and how to configure the gulpfile.js, please see and run [the sample Play project](play-gulp-sample/) in the play-gulp-demo directory of this repository.
 
 ## For Whom and Why Gulp not Grunt
 
@@ -33,14 +40,14 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
 3. Add the play gulp plugin to the `<your-project-root>/project/plugins.sbt` file along with the play sbt plugin `addSbtPlugin("com.typesafe.play" % "sbt-plugin" % ${playVersion})` and let the project depend on the play gulp plugin:
   ```
-  addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.2")
+  addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.0")
 
-  addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.0.1")
+  addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.0")
   ```
 
 4. Add the following routing settings in the `<your-project-root>/conf/routes` file:
   ```
-  GET     /ui         com.github.mmizutani.playgulp.Gulp.index
+  GET     /ui         com.github.mmizutani.playgulp.GulpAssetes.index
 
   ->      /ui/        gulp.Routes
   ```
@@ -88,13 +95,10 @@ When compilation or testing takes place, the `PlayGulpPlugin` runs all required 
 
 ## For Developers
 
-### How to publish cross-compiled binaries to the Sonatype repository
-```sh
+### How to publish this plugin to the Sonatype Maven repository
+```bash
 $ echo 'version in ThisBuild := "x.x.x"' > ./version.sbt
-$ sbt
-> pgp-cmd gen-key
-> ;project play-gulp;+update;+compile;+stage;+publishLocal
-> ;+update;+compile;+stage;+publishLocal
-$ sbt publishSigned
-$ sbt "+publishSigned"
+$ sbt "pgp-cmd gen-key"
+$ sbt ";project play-gulp;clean;update;compile;stage;publishSigned"
+$ sbt ";project sbt-play-gulp;clean;update;compile;publishSigned"
 ```

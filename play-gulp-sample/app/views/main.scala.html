@@ -1,0 +1,23 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>@title</title>
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+    <script type="text/javascript" src="@routes.Assets.versioned("javascripts/hello.js")"></script>
+    <script type="text/javascript" src="@routes.Application.jsRoutes()"></script>
+  </head>
+  <body>
+    <div id="app-banner">
+      <a href="@gulp.Routes()">
+        <img id="banner-img" src="@routes.Assets.versioned("assets/images/yeoman.png")" alt="Go to Gulp Angular frontend home">
+        <caption>Go to Gulp Angular frontend home</caption>
+      </a>
+    </div>
+    @content
+  </body>
+</html>

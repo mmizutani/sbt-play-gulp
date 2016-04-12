@@ -5,11 +5,14 @@ jdk: oraclejdk8
 sudo: false
 
 script:
-  - sbt scripted
+  - sbt clean test +publishLocal
+  - cd play-gulp-sample && sbt clean test
 
 cache:
   directories:
-    - $HOME/.ivy2/cache
+    - $HOME/.m2
+    - $HOME/.ivy2/cache/
+    - $HOME/.sbt
 
 before_cache:
   # Ensure changes to the cache aren't persisted

@@ -1,34 +1,12 @@
 package com.github.mmizutani.sbt.gulp
 
-import play.twirl.sbt.Import.TwirlKeys
 import sbt._
 import sbt.Keys._
 import play.sbt.{Play, PlayRunHook}
 import play.sbt.PlayImport.PlayKeys._
-import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._ // for stage and dist TaskKeys
+import play.twirl.sbt.Import.TwirlKeys
+import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._
 import com.typesafe.sbt.web.Import.Assets
-
-/**
- * AutoPlugin References
- * http://mukis.de/pages/sbt-autoplugins-tutorial/
- * http://eed3si9n.com/ja/sbt-preview-auto-plugins
- * https://github.com/playframework/playframework/blob/master/framework%2Fsrc%2Fsbt-plugin%2Fsrc%2Fmain%2Fscala%2Fplay%2Fsbt%2FPlay.scala
- * http://www.scala-sbt.org/0.13/docs/Plugins.html
- * http://hakobe932.hatenablog.com/entry/2014/04/02/220457
- * https://www.playframework.com/documentation/2.4.x/SBTCookbook#Hook-actions-around-play-run
- * http://www.scala-sbt.org/0.13/docs/Community-Plugins.html
- */
-
-/**
- * AutoPlugin Examples
- * https://github.com/sbt/sbt-web/src/main/scala/com/typesafe/sbt/web/SbtWeb.scala
- * https://github.com/heroku/sbt-heroku
- * https://github.com/mohiva/play-silhouette
- * https://github.com/jamesward/play-auto-refresh
- * https://github.com/playframework/play-slick/blob/master/build.sbt
- * https://github.com/VoxNova/sbt-plugin-seed
- * https://github.com/vmunier/sbt-play-scalajs
- */
 
 /**
  * Defines all settings/tasks that get automatically imported when the plugin is enabled
@@ -64,9 +42,9 @@ object PlayGulpPlugin extends AutoPlugin {
    * Main plugin settings which add gulp commands to sbt tasks
    */
   lazy val playGulpSettings: Seq[Def.Setting[_]] = Seq(
-    libraryDependencies ++= Seq("com.github.mmizutani" %% "play-gulp" % "0.0.7" intransitive()),
+    libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "0.1.0" exclude("com.typesafe.play", "play"),
 
-    // Where does the UI live?
+    // Path of the frontend project root
     gulpDirectory <<= (baseDirectory in Compile) {
       _ / "ui"
     },
@@ -82,9 +60,6 @@ object PlayGulpPlugin extends AutoPlugin {
           "npm",
           "bower",
           "yo",
-          "jspm",
-          "ied",
-          "npmd",
           "git"
         ).map(cmd(_, base))
     },
@@ -109,9 +84,8 @@ object PlayGulpPlugin extends AutoPlugin {
       val gulpfileName = (gulpFile in Compile).value
       val isForceEnabled = (forceGulp in Compile).value
       val result = runGulp(base, gulpfileName, List("build"), isForceEnabled = isForceEnabled).exitValue()
-      if (result == 0) {
-        result
-      } else throw new Exception("gulp failed")
+      if (result == 0) result
+      else throw new Exception("gulp failed")
     },
 
     // Execute `gulp build` before `sbt dist`
@@ -127,8 +101,8 @@ object PlayGulpPlugin extends AutoPlugin {
     // target/scala-2.11/play-gulp_2.11-1.0.0-web-asset.jar/public when the play app is compiled
     unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "dist"),
 
-    // Add asset files in ui/src directory to the watch list for auto browser reloading
-    watchSources <++= gulpDirectory map { path => ((path / "src") ** "*").get},
+    // Add asset files in ui/src directory to the watch list for auto browser
+    watchSources <++= gulpDirectory map { path => ((path / "src") ** "*.scala.*").get},
   
     // Run gulp before sbt run
     playRunHooks <+= (gulpDirectory, gulpFile, forceGulp).map {
@@ -155,8 +129,8 @@ object PlayGulpPlugin extends AutoPlugin {
   )
 
   private def runGulp(base: sbt.File, fileName: String,
-                       args: List[String] = List.empty,
-                       isForceEnabled: Boolean = true): Process = {
+                      args: List[String] = List.empty,
+                      isForceEnabled: Boolean = true): Process = {
     //println(s"Will run: gulp --gulpfile=$gulpFile $args in ${base.getPath}")
 
     val arguments = if (isForceEnabled) {
@@ -202,15 +176,15 @@ object PlayGulpPlugin extends AutoPlugin {
 
       object GulpSubProcessHook extends PlayRunHook {
 
-        var process: Option[Process] = None
+        var watchProcess: Option[Process] = None
 
         override def beforeStarted(): Unit = {
-          process = Some(runGulp(base, fileName, "watch" :: Nil, isForceEnabled))
+          watchProcess = Some(runGulp(base, fileName, "watch" :: Nil, isForceEnabled))
         }
 
         override def afterStopped(): Unit = {
-          process.foreach(_.destroy())
-          process = None
+          watchProcess.foreach(_.destroy())
+          watchProcess = None
         }
       }
 
