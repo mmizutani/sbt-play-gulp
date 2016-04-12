@@ -1,15 +1,20 @@
 package com.github.mmizutani.playgulp
 
+import javax.inject._
+
 import play.api._
 import play.api.mvc._
 import controllers.Assets
-import play.api.Play.current
 import java.io.File
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.collection.JavaConverters._
+import scala.collection.JavaConversions._
 
-object Gulp extends Controller {
+@Singleton
+class Gulp @Inject() (env: play.api.Environment,
+                      assets: Assets,
+                      devAssets: DevAssets) extends Controller {
   def index = Action.async {
     request =>
       if (request.path.endsWith("/")) {
@@ -29,29 +34,27 @@ object Gulp extends Controller {
   }
 
   def assetHandler(file: String): Action[AnyContent] = {
-    Assets.at("/public", file)
+    assets.at("/public", file)
   }
 
-  lazy val atHandler: String => Action[AnyContent] = if (Play.isProd) assetHandler(_: String) else DevAssets.assetHandler(_: String)
+  lazy val atHandler: String => Action[AnyContent] = if (env.mode == Mode.Prod) assetHandler(_: String) else devAssets.assetHandler(_: String)
 
   def at(file: String): Action[AnyContent] = atHandler(file)
 }
 
-class Gulp extends Controller {
-  def index = Gulp.index
-  def redirectRoot(base: String = "/ui/") = Gulp.redirectRoot(base)
-}
-
-object DevAssets extends Controller {
-  // paths to the grunt compile directory or else the application directory, in order of importance
-  val runtimeDirs = Play.configuration.getStringList("gulp.devDirs")
+@Singleton
+class DevAssets @Inject() (env: play.api.Environment,
+                           conf: play.api.Configuration) extends Controller {
+  // paths to the grunt compile directory or else the application directory
+  // in descending order of importance
+  val runtimeDirs = conf.underlying.getStringList("gulp.devDirs")
   val basePaths: List[java.io.File] = runtimeDirs match {
-    case Some(dirs) => dirs.asScala.map(Play.application.getFile).toList
-    case None => List(
-      Play.application.getFile("ui/.tmp/serve"),
-      Play.application.getFile("ui/src"),
-      Play.application.getFile("ui")
+    case List() => List(
+      env.getFile("ui/.tmp/serve"),
+      env.getFile("ui/src"),
+      env.getFile("ui")
     )
+    case dirs => dirs.map(env.getFile).toList
   }
 
   /**
@@ -61,9 +64,10 @@ object DevAssets extends Controller {
    * absolute path is in the correct SBT sub-project.
    */
   def assetHandler(fileName: String): Action[AnyContent] = Action {
+    // generate a non-strict (lazy) list of the full paths
     val targetPaths = basePaths.view map {
       new File(_, fileName)
-    } // generate a non-strict (lazy) list of the full paths
+    }
 
     // take the files that exist and generate the response that they would return
     val responses = targetPaths filter {
