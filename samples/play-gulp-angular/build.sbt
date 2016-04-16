@@ -1,6 +1,7 @@
-import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
+import PlayGulpPlugin._
+import PlayGulpKeys._
 
-lazy val `play-gulp-sample`: Project = (project in file(".")).enablePlugins(PlayScala)
+lazy val `play-gulp-angular`: Project = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.8"
 
@@ -16,3 +17,7 @@ resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
 routesGenerator := InjectedRoutesGenerator
 
 PlayGulpPlugin.playGulpSettings ++ PlayGulpPlugin.withTemplates
+
+
+//unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "build")
+//sourceDirectories in TwirlKeys.compileTemplates in Compile ++= Seq(gulpDirectory.value / "app")

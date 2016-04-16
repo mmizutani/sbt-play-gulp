@@ -27,8 +27,11 @@ This SBT plugin allows you to:
 - Manually run the npm, bower and gulp commands on the Play sbt console.
 
 
-## Demo
-To see the plugin in action and how to configure the gulpfile.js, please see and run the sample Play projects in the [samples directory](https://github.com/mmizutani/sbt-play-gulp/samples/) of this repository.
+## Demos
+To see the plugin in action and how to configure the gulpfile.js, please see and run the sample Play projects
+* [play-gulp-angular](https://github.com/mmizutani/sbt-play-gulp/samples/play-gulp-angular)
+* [play-gulp-react](https://github.com/mmizutani/sbt-play-gulp/samples/play-gulp-react)
+in the samples directory of this repository.
 
 
 ## For whom and why Gulp not Grunt
@@ -65,10 +68,14 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```bash
     import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
-    lazy val root = (project in file("."))
-      .enablePlugins(PlayScala)
-      .settings(PlayGulpPlugin.playGulpSettings: _*)
-      .settings(PlayGulpPlugin.withTemplates: _*)
+
+    object HelloBuild extends Build {
+
+      override lazy val settings = super.settings ++ PlayGulpPlugin.playGulpSettings ++ PlayGulpPlugin.withTemplates
+      lazy val root = (project in file("."))
+        .enablePlugins(PlayScala)
+        .settings(settings: _*)
+    }
     ```
 
 5. Create an `<your-project-root>/ui` folder and populate a Yeoman frontend template of your choice in the ui directory:
@@ -91,18 +98,34 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     This adjustment is necessary since the root directory of static assets is ui/src in the development and test modes of a Play application, which does not allow us to serve files in directories higher than the ui/src (e.g., ui/bower_components).
 
-7. [Optional] Uncomment and change the two configuration parameters for the sbt-play-gulp plugin in `conf/application.conf` if necessary.
+7. Make sure that this plugin recognizes the correct source and output directory paths of your Gulp frontend project.
+
+    By default, the sbt-play-gulp plugin assumes that frontend static asset files reside in `ui/.tmp.serve`, `ui/src` or `ui` directories, a behavior specifically tailored for the Yeoman Gulp-Angular template project. In development and test modes the playgulp.GulpAssets handler looks for frontend static files in ui/.tmp/serve directory first. If those files were not found there, the asset handeler next tries ui/src directory and then the ui directory. If your frontend project under the ui directory is based on a different Yaoman template and thus serves files from a diffent folder (e.g., `ui/app`), you can customize this behavior by overriding the default values of the devDirs array in `conf/application.conf` of your Play project:
 
     ```
-    gulp {
-      //devDirs=["ui/.tmp/serve", "ui/src", "ui"]
-      //distDir="ui/dist"
-    }
+    #gulp.devDirs=["ui/.tmp/serve", "ui/src", "ui"]
+    gulp.devDirs=["ui/app"]
     ```
 
-    By default, the sbt-play-gulp plugin assumes that frontend static asset files reside in ui/.tmp.serve, ui/src or ui directories, a behavior specifically tailored for the Yeoman Gulp-Angular template project. In development and test modes the playgulp.GulpAssets handler looks for frontend static files in ui/.tmp/serve directory first. If those files were not found there, the asset handeler next tries ui/src directory and then the ui directory. For production build, the compiled frontend files in the ui/dist directory are packaged into the application classpath.
+    For production build, this plugin assumes by default that the frontend files are compiled into the `ui/dist` directory and that the contents of the `ui/dist` are packaged into the application classpath. If Gulp for your frontend project uses a different folder (e.g., `ui/build`) for output, you can override this setting as well by adding the following lines to `build.sbt` or `project/Build.scala`:
 
-    If your frontend project in the ui directory has somewhat different structures, you can customize this behavior by overriding the default values of the devDirs array and distDir (gulp.devDirs=["ui/.tmp/serve", "ui/src", "ui"] and gulp.distDir="ui/dist"). As for devDirs array, the leftmost element is of the highest search priority.
+    ```scala
+    import PlayGulpPlugin._
+    import PlayGulpKeys._
+    ...
+    unmanagedResourceDirectories in Assets <+= (gulpDirectory in Compile)(base => base / "build")
+    ```
+
+    This adds `ui/build` to the list of directories from which SBT packs non-Java/non-Scala static files into application jars.
+
+    Likewise, if the source (pre-build) files of your frontend project are located in a directory other than `ui/src` (e.g., `ui/app`) and you want Play to compile twirl scala templates in the directory, you should add the following to `build.sbt` or `project/Build.scala`:
+
+    ```scala
+    import PlayGulpPlugin._
+    import PlayGulpKeys._
+    ...
+    sourceDirectories in TwirlKeys.compileTemplates in Compile ++= Seq(gulpDirectory.value / "app")
+    ```
 
 8. Add the following routing settings in the `<your-project-root>/conf/routes` file:
 
@@ -121,7 +144,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
     [your-play-project] $ bower install
     ```
 
-10. Tweak as you like the frontend html/javascript/css project template in the `<your-project-root>/ui/src` diretory.
+10. Tweak the frontend html/javascript/css project template in the `<your-project-root>/ui/src` diretory as you like.
 
 11. Now you can compile and run your Play project with the frontend managed by Gulp:
 
@@ -135,7 +158,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     In the background, the Gulp taskrunner builds and packages your frontend part all the way through this Play app workflow.
 
-    You will see the compiled frontend app at http://localhost:9000/, which is redirected to http://localhost:9000/ui/ serving static web assets located in the ui/src directory in the development mode and in the ui/dist directory in the production mode (if you did not customize the paths in the process 5. above).
+    You will see the compiled frontend app at http://localhost:9000/, which is redirected to http://localhost:9000/ui/ serving static web assets located in the `ui/src directory` in the development mode and in the `ui/dist` directory in the production mode (the paths might differ if you customizes them in 7. above).
 
 
 12. You can also test and package the Play app along with the compiled frontend assets:
@@ -144,7 +167,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
     [your-play-project] $ test
     [your-play-project] $ testProd
     [your-play-project] $ ;clean;stage;dist
-
+    ```
 
 ## How this works
 

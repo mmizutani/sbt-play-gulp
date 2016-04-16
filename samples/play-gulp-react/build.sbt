@@ -1,6 +1,4 @@
-import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
-
-lazy val `play-gulp-sample`: Project = (project in file(".")).enablePlugins(PlayScala)
+lazy val `play-gulp-react`: Project = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.11.8"
 
