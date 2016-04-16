@@ -1,0 +1,8 @@
+GET        /oldhome                    controllers.Application.oldhome
+GET        /routes                     controllers.Application.routes
+GET        /jsroutes.js                controllers.Application.jsRoutes(varName ?= "jsRoutes")
+GET        /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+GET        /                           controllers.Application.index
+GET        /ui                         com.github.mmizutani.playgulp.GulpAssets.index
+->         /ui/                        gulp.Routes

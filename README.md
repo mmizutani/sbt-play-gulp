@@ -28,7 +28,7 @@ This SBT plugin allows you to:
 
 
 ## Demo
-To see the plugin in action and how to configure the gulpfile.js, please see and run [the sample Play project](play-gulp-sample/) in the play-gulp-demo directory of this repository.
+To see the plugin in action and how to configure the gulpfile.js, please see and run the sample Play projects in the [samples directory](https://github.com/mmizutani/sbt-play-gulp/samples/) of this repository.
 
 
 ## For whom and why Gulp not Grunt
@@ -108,6 +108,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```
     GET     /           com.github.mmizutani.playgulp.GulpAssetes.redirectRoot("/ui/")
+    ...
     GET     /ui         com.github.mmizutani.playgulp.GulpAssetes.index
     ->      /ui/        gulp.Routes
     ```
@@ -122,37 +123,41 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
 10. Tweak as you like the frontend html/javascript/css project template in the `<your-project-root>/ui/src` diretory.
 
-9. Compile, run, test and package your Play project with the frontend managed by Gulp:
+11. Now you can compile and run your Play project with the frontend managed by Gulp:
 
     ```bash
     $ sbt
     [your-play-project] $ update
     [your-play-project] $ compile
-    Will run: [gulp, --gulpfile=gulpfile.js, --force] in /home/path/to/your/play/project/ui
-    ...
+    Will run: [gulp, --gulpfile=gulpfile.js, --force] in path/to/your/play/project/ui
     [your-play-project] $ run
-    [your-play-project] $ test
-    [your-play-project] $ testProd
-    [your-play-project] $ ;clean;stage;dist
     ```
 
     In the background, the Gulp taskrunner builds and packages your frontend part all the way through this Play app workflow.
 
-    You will see the compiled app at http://localhost:9000/, which is redirected to http://localhost:9000/ui/ serving static web assets located in the ui/app directory in the dev run mode and in the ui/dist directory in the production start mode.
+    You will see the compiled frontend app at http://localhost:9000/, which is redirected to http://localhost:9000/ui/ serving static web assets located in the ui/src directory in the development mode and in the ui/dist directory in the production mode (if you did not customize the paths in the process 5. above).
+
+
+12. You can also test and package the Play app along with the compiled frontend assets:
+
+    ```bash
+    [your-play-project] $ test
+    [your-play-project] $ testProd
+    [your-play-project] $ ;clean;stage;dist
 
 
 ## How this works
 
 With this plugin, play-sbt build lifecycle triggers the corresponding gulp tasks:
 
-SBT Commands     | Gulp Tasks
----------------- | ------------
-`sbt gulp <arg>` | `gulp <arg>`
-`sbt run`        | `gulp watch`
-`sbt compile`    | `gulp build`
-`sbt stage`      | `gulp build`
-`sbt dist`       | `gulp build`
-`sbt clean`      | `gulp clean`
+SBT Commands       | Gulp Tasks
+------------------ | ------------
+`sbt "gulp <arg>"` | `gulp <arg>`
+`sbt run`          | `gulp watch`
+`sbt compile`      | `gulp build`
+`sbt stage`        | `gulp build`
+`sbt dist`         | `gulp build`
+`sbt clean`        | `gulp clean`
 
 So make sure that the gulpfile.js in the `ui` directory of your Play project implements the `watch`, `build` and `clean` tasks.
 
