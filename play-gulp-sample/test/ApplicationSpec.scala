@@ -31,7 +31,6 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
     }
 
     "render the old index page" in {
-      //implicit val materializer = app.materializer
       val oldhome = route(app, FakeRequest(GET, "/oldhome")).get
       status(oldhome) mustBe OK
       contentType(oldhome) mustBe Some("text/html")
