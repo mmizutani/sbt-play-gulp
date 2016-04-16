@@ -8,7 +8,7 @@ If you do not like your Play app to depend on any sbt plugin, [play-gulp-standal
 ## Change logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
-* v0.1.1 Fixed errors.
+* v0.1.1 (Latest) Fixed various errors.
 * v0.1.0 Added support for Play 2.5 and dropped support for Scala 2.10.
 * v0.0.7 Added jspm command - You can now execute jspm in the sbt console.
 * v0.0.6 Bumped up the Play sbt plugin version from 2.4.2 to 2.4.3.
@@ -26,55 +26,122 @@ This SBT plugin allows you to:
 - Automatically run various user-defined gulp tasks such as JavaScript obfuscation, CSS concatenation and CDNification on the `compile`, `run`, `stage`, `dist` and `clean` stages.
 - Manually run the npm, bower and gulp commands on the Play sbt console.
 
+
 ## Demo
 To see the plugin in action and how to configure the gulpfile.js, please see and run [the sample Play project](play-gulp-sample/) in the play-gulp-demo directory of this repository.
+
 
 ## For whom and why Gulp not Grunt
 
 This plugin is assumed to be mainly for those who have been familiar with Gulp and would like to utilize Gulp instead of the official web-jar ecosystem for static asset compilation in Play Framework. Play Gulp Plugin is largely a modification of the [play-yeoman plugin](https://github.com/tuplejump/play-yeoman), which uses Grunt rather than Gulp. I created this custom plugin after having found that Gulp configuration is more streamlined and easier to use compared with Grunt.
 
+
 ## How to use this sbt plugin
 
-1. Install npm, bower and gulp if you do not have them yet.
+1. Install npm and other prerequisites:
 
-2. If you do not have any existing Play project, create a plain one like the play-scala template and specify in `<your-project-root>/project/build.properties` the sbt version as `sbt.version=0.13.11`, which needs to be 0.13.5 or higher.
+```bash
+$ npm install -g yo gulp bower
+```
 
-3. Add the play gulp plugin to the `<your-project-root>/project/plugins.sbt` file along with the play sbt plugin `addSbtPlugin("com.typesafe.play" % "sbt-plugin" % ${playVersion})` and let the project depend on the play gulp plugin:
-  ```
-  addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.2")
+2. If you do not have any existing Play project, create a plain one like the play-scala template and specify in `<your-project-root>/project/build.properties` the sbt version as `sbt.version=0.13.11`.
 
-  addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.1")
-  ```
+3. Add the play gulp plugin to the `<your-project-root>/project/plugins.sbt` file along with the play sbt plugin `addSbtPlugin("com.typesafe.play" % "sbt-plugin" % ${playVersion})` and also import the sbt-play-gulp plugin of this repository:
 
-4. Add the following routing settings in the `<your-project-root>/conf/routes` file:
-  ```
-  GET     /ui         com.github.mmizutani.playgulp.GulpAssetes.index
-  ->      /ui/        gulp.Routes
-  ```
+```
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.2")
+addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.1")
+```
 
-5. Create an `<your-project-root>/ui` folder in the project top directory and inside of it create `package.json`, `bower.json` and `gulpfile.js` files.
+4. Add settings specific to the sbt-play-gulp plugin in build.sbt:
 
-6. Edit `package.json`, `bower.json` and `gulpfile.js`, enter the play-sbt console, and install public libraries:
-  ```bash
-  $ sbt (or activator)
-  [your-play-project] $ npm install
-  [your-play-project] $ bower install
-  ```
+```bash
+import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
+...
+PlayGulpPlugin.playGulpSettings ++ PlayGulpPlugin.withTemplates
+```
 
-7. Create HTML/JavaScript/CSS files in the `<your-project-root>/` diretory.
+or in project/Build.scala:
 
-8. Compile and run the Play project:
-  ```bash
-  $ sbt
-  [your-play-project] $ compile
-  Will run: [gulp, --gulpfile=gulpfile.js, --force] in /home/path/to/your/play/project/ui
-  ...
-  [your-play-project] $ run
-  ```
+```bash
+import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
+lazy val root = (project in file("."))
+  .enablePlugins(PlayScala)
+  .settings(PlayGulpPlugin.playGulpSettings: _*)
+  .settings(PlayGulpPlugin.withTemplates: _*)
+```
+
+5. Create an `<your-project-root>/ui` folder and populate a Yeoman frontend template of your choice in the ui directory:
+
+```bash
+$ mkdir ui
+$ cd $_
+$ npm install -g generator-gulp-angular
+$ yo gulp-angular
+```
+
+6. Move bower_components directory, if present, from ui to ui/src and adjust the paths in two config files accordingly:
+
+```bash
+$ cd ui
+$ mv bower_components src
+$ sed -e 's/"bower_components"/"src\/bower_components"/' .bowerrc
+$ sed -e 's/\x27bower_components\x27/\x27src\/bower_components\x27/' gulp/conf.js
+```
+This adjustment is necessary since the root directory of static assets is ui/src in the development and test modes of a Play application, which does not allow us to serve files in directories higher than the ui/src (e.g., ui/bower_components).
+
+7. [Optional] Uncomment and change the two configuration parameters for the sbt-play-gulp plugin in `conf/application.conf` if necessary.
+
+```
+gulp {
+  //devDirs=["ui/.tmp/serve", "ui/src", "ui"]
+  //distDir="ui/dist"
+}
+```
+
+By default, the sbt-play-gulp plugin assumes that frontend static asset files reside in ui/.tmp.serve, ui/src or ui directories, a behavior specifically tailored for the Yeoman Gulp-Angular template project. In development and test modes the playgulp.GulpAssets handler looks for frontend static files in ui/.tmp/serve directory first. If those files were not found there, the asset handeler next tries ui/src directory and then the ui directory. For production build, the compiled frontend files in the ui/dist directory are packaged into the application classpath.
+
+If your frontend project in the ui directory has somewhat different structures, you can customize this behavior by overriding the default values of the devDirs array and distDir (gulp.devDirs=["ui/.tmp/serve", "ui/src", "ui"] and gulp.distDir="ui/dist"). As for devDirs array, the leftmost element is of the highest search priority.
+
+8. Add the following routing settings in the `<your-project-root>/conf/routes` file:
+
+```
+GET     /           com.github.mmizutani.playgulp.GulpAssetes.redirectRoot("/ui/")
+GET     /ui         com.github.mmizutani.playgulp.GulpAssetes.index
+->      /ui/        gulp.Routes
+```
+
+9. Edit `package.json`, `bower.json` and `gulpfile.js`, enter the play-sbt console, and install public libraries:
+
+```bash
+$ sbt (or activator)
+[your-play-project] $ npm install
+[your-play-project] $ bower install
+```
+
+10. Tweak as you like the frontend html/javascript/css project template in the `<your-project-root>/ui/src` diretory.
+
+9. Compile, run, test and package your Play project with the frontend managed by Gulp:
+
+```bash
+$ sbt
+[your-play-project] $ update
+[your-play-project] $ compile
+Will run: [gulp, --gulpfile=gulpfile.js, --force] in /home/path/to/your/play/project/ui
+...
+[your-play-project] $ run
+[your-play-project] $ test
+[your-play-project] $ testProd
+[your-play-project] $ ;clean;stage;dist
+```
+
+In the background, the Gulp taskrunner builds and packages your frontend part all the way through this Play app workflow.
+
   You will see the compiled app at http://localhost:9000/, which is redirected to http://localhost:9000/ui/ serving static web assets located in the ui/app directory in the dev run mode and in the ui/dist directory in the production start mode.
 
 
 ## How this works
+
 With this plugin, play-sbt build lifecycle triggers the corresponding gulp tasks:
 
 SBT Commands     | Gulp Tasks

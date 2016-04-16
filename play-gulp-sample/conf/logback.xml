@@ -38,7 +38,7 @@
     if you do not need logging to console each time static assets
     in ui/src and ui/dist are served to a web browser through the GulpAssets controller.
   -->
-  <logger name="controllers.GulpAssets" level="DEBUG" />
+  <logger name="com.github.mmizutani.playgulp.GulpAssets" level="DEBUG" />
 
   <root level="WARN">
     <appender-ref ref="ASYNCFILE" />
