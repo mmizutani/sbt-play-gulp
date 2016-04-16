@@ -36,13 +36,13 @@ object PlayGulpPlugin extends AutoPlugin {
   import autoImport._
   import PlayGulpKeys._
 
-  override lazy val projectSettings: Seq[Setting[_]] = playGulpSettings ++ withTemplates
+  override lazy val projectSettings: Seq[Setting[_]] = super.projectSettings ++ playGulpSettings ++ withTemplates
 
   /**
    * Main plugin settings which add gulp commands to sbt tasks
    */
   lazy val playGulpSettings: Seq[Def.Setting[_]] = Seq(
-    libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "0.1.0" exclude("com.typesafe.play", "play"),
+    libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "0.1.1" exclude("com.typesafe.play", "play"),
 
     // Path of the frontend project root
     gulpDirectory <<= (baseDirectory in Compile) {

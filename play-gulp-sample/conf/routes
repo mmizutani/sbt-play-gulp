@@ -3,9 +3,8 @@ GET        /routes                     controllers.Application.routes
 GET        /jsroutes.js                controllers.Application.jsRoutes(varName ?= "jsRoutes")
 GET        /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-GET        /                           com.github.mmizutani.playgulp.GulpAssets.redirectRoot(base="/ui/")
+GET        /                           controllers.Application.index
 GET        /ui/views/templ.html        controllers.Application.serveTemplate
 GET        /tdemo                      controllers.Application.templateDemo
-GET        /ui/*file                   com.github.mmizutani.playgulp.GulpAssets.at(file)
 GET        /ui                         com.github.mmizutani.playgulp.GulpAssets.index
 ->         /ui/                        gulp.Routes

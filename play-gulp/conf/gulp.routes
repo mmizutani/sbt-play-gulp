@@ -1,7 +1,6 @@
 # Routes
-# This file defines all application gulp.routes (Higher priority gulp.routes first)
+# This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET      /*file   com.github.mmizutani.playgulp.GulpAssets.at(file)
 GET      /        com.github.mmizutani.playgulp.GulpAssets.index
+GET      /*file   com.github.mmizutani.playgulp.GulpAssets.at(file)

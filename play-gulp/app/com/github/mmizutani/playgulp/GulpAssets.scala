@@ -1,7 +1,6 @@
 package com.github.mmizutani.playgulp
 
 import javax.inject._
-
 import play.api._
 import play.api.mvc._
 import java.io.File
@@ -12,8 +11,8 @@ import controllers.Assets
 
 @Singleton
 class GulpAssets @Inject() (env: play.api.Environment,
-                            assets: Assets,
                             conf: Configuration) extends Controller {
+
   private lazy val logger = Logger(getClass)
 
   /**
@@ -101,5 +100,6 @@ class GulpAssets @Inject() (env: play.api.Environment,
     * @param file Path and file name of the static asset served to the client in the production mode
     * @return Static asset file
     */
-  private[playgulp] def prodAssetHandler(file: String): Action[AnyContent] = assets.at("/public", file)
+  private[playgulp] def prodAssetHandler(file: String): Action[AnyContent] = Assets.at("/public", file)
+
 }

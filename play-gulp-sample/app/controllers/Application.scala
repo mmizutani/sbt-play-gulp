@@ -5,7 +5,6 @@ import play.api._
 import play.api.mvc.{Action, Controller}
 import play.api.routing.{JavaScriptReverseRoute, JavaScriptReverseRouter, Router}
 import play.twirl.api.Html
-
 import com.github.mmizutani.playgulp.GulpAssets
 
 @Singleton
@@ -18,18 +17,20 @@ class Application(env: Environment,
   def this(env: Environment, gulpAssets: GulpAssets, router: Provider[Router]) =
     this(env, gulpAssets, Some(router.get))
 
-  def index = gulpAssets.index
+  def index = gulpAssets.redirectRoot("/ui/")
 
   def oldhome = Action {
     Ok(views.html.index("Play Framework"))
   }
 
+  // Serves a page compiled from the twirl template ui/src/views/demo.scala.html
   def templateDemo = Action {
     Ok(views.html.demo("Scala template in Angular")
     (Html("<div>This is a play scala template in angular views folder which is compiled and used inplace!</div>"))
     )
   }
 
+  // Serves a page compiled from the twirl template ui/src/views/templ.scala.html
   def serveTemplate = Action {
     Ok(views.html.templ("Compiled from a scala template!"))
   }
@@ -45,13 +46,15 @@ class Application(env: Environment,
 
   /**
     * Returns the JavaScript router that the client can use for "type-safe" routes.
-    *
     * @param varName The name of the global variable, defaults to `jsRoutes`
     */
   def jsRoutes(varName: String = "jsRoutes") = Action { implicit request =>
     Ok(JavaScriptReverseRouter(varName)(routeCache: _*)).as(JAVASCRIPT)
   }
 
+  /**
+    * Returns true if this app is running as a demo on the herokuapp.com domain.
+    */
   def onHerokuDomain(fqdn: String): Boolean = {
     val regex = """.*?([^\.]+)\.(?:com)$""".r
     fqdn match {
@@ -61,7 +64,7 @@ class Application(env: Environment,
   }
 
   /**
-    * Returns a list of all the HTTP action routes for easier debugging and demo
+    * Returns a list of all the HTTP action routes for easier debugging.
     */
   def routes = Action { request =>
     if (env.mode == Mode.Dev || env.mode == Mode.Test || onHerokuDomain(request.domain))
