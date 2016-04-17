@@ -4,7 +4,6 @@ import javax.inject._
 import play.api._
 import play.api.mvc.{Action, Controller}
 import play.api.routing.{JavaScriptReverseRoute, JavaScriptReverseRouter, Router}
-import play.twirl.api.Html
 import com.github.mmizutani.playgulp.GulpAssets
 
 @Singleton

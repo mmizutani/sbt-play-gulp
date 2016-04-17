@@ -1,19 +1,25 @@
 language: scala
-
-jdk: oraclejdk8
-
 sudo: false
-
+jdk: oraclejdk8
+rvm:
+  - 2.2.2
+node_js:
+  - 0.10
+before_script:
+  - bundle install
+  - npm install -g gulp bower
 script:
-  - sbt clean test +publishLocal
-  - cd play-gulp-sample && sbt clean test
-
+  - sbt ";project play-gulp;clean;update;publishLocal"
+  - sbt ";project sbt-play-gulp;clean;update;publishLocal"
+  - cd samples/play-gulp-angular/ui && npm install && bower install
+  - cd ../ && sbt ";clean;compile;test"
 cache:
   directories:
     - $HOME/.m2
     - $HOME/.ivy2/cache/
     - $HOME/.sbt
-
+    - samples/play-gulp-angular/ui/node_modules
+    - samples/play-gulp-angular/ui/src/bower_components
 before_cache:
   # Ensure changes to the cache aren't persisted
   - rm -rf $HOME/.ivy2/cache/com.mmizutani.sbt.gulp/play-gulp-plugin/*

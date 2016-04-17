@@ -23,11 +23,11 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
 
   "Application Controller" should {
 
-    "render the yeoman gulp-angular index page" in {
-      val home = route(app, FakeRequest(GET, "/")).get
+    "render the yeoman frontend index page" in {
+      val home = route(app, FakeRequest(GET, "/ui/")).get
       status(home) mustBe OK
       contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include ("Gulp AngularJS")
+      contentAsString(home) must include ("Gulp Angular")
     }
 
     "render the old index page" in {
@@ -35,11 +35,6 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
       status(oldhome) mustBe OK
       contentType(oldhome) mustBe Some("text/html")
       contentAsString(oldhome) must include ("Play Framework")
-    }
-
-    "prevent directory listing" in {
-      val assetsDir = route(app, FakeRequest(GET, "/assets/")).get
-      status(assetsDir) mustEqual FORBIDDEN
     }
 
   }
