@@ -1,6 +1,6 @@
 logLevel := Level.Warn
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.2")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.3")
 
 // For developers only
 //lazy val root = (project in file(".")).dependsOn(plugin)
