@@ -28,9 +28,11 @@ This SBT plugin allows you to:
 
 
 ## Demos
+
 To see the plugin in action and how to configure the gulpfile.js, please see and run the sample Play projects
 * [play-gulp-angular](https://github.com/mmizutani/sbt-play-gulp/samples/play-gulp-angular)
 * [play-gulp-react](https://github.com/mmizutani/sbt-play-gulp/samples/play-gulp-react)
+
 in the samples directory of this repository.
 
 
