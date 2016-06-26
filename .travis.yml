@@ -2,26 +2,27 @@ language: scala
 sudo: false
 jdk: oraclejdk8
 rvm:
-  - 2.2.2
+- 2.2.2
 node_js:
-  - 0.10
+- 0.1
 before_script:
-  - bundle install
-  - npm install -g gulp bower
+- bundle install
+- npm install -g gulp bower
 script:
-  - sbt ";project play-gulp;clean;update;publishLocal"
-  - sbt ";project sbt-play-gulp;clean;update;publishLocal"
-  - cd samples/play-gulp-angular/ui && npm install && bower install
-  - cd ../ && sbt ";clean;compile;test"
+- sbt ";project play-gulp;clean;update;publishLocal"
+- sbt ";project sbt-play-gulp;clean;update;publishLocal"
+- cd samples/play-gulp-angular/ui && npm install && bower install
+- cd ../ && sbt ";clean;compile;test"
 cache:
   directories:
-    - $HOME/.m2
-    - $HOME/.ivy2/cache/
-    - $HOME/.sbt
-    - samples/play-gulp-angular/ui/node_modules
-    - samples/play-gulp-angular/ui/src/bower_components
+  - "$HOME/.m2"
+  - "$HOME/.ivy2/cache/"
+  - "$HOME/.sbt"
+  - samples/play-gulp-angular/ui/node_modules
+  - samples/play-gulp-angular/ui/src/bower_components
 before_cache:
-  # Ensure changes to the cache aren't persisted
-  - rm -rf $HOME/.ivy2/cache/com.mmizutani.sbt.gulp/play-gulp-plugin/*
-  # Delete all ivydata files since ivy touches them on each build
-  - find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
+- rm -rf $HOME/.ivy2/cache/com.mmizutani.sbt.gulp/play-gulp-plugin/*
+- find $HOME/.ivy2/cache -name "ivydata-*.properties" | xargs rm
+notifications:
+  slack:
+    secure: ns8d1pHpl41hAj9or4m9XSYZf5ht5I5hNzRbtC2DhEeB65NTNwld6+S1OG5hntKyXlJXTtnj+yFcX15Ok29ApdaLH9UiAl30RROsWc2GpOt3LaMf09foEKCM/5I53PR7GuKpSz3AO0O0xBb0/6GAiKv6YaMXvfrzoXumHGRTQ79vrEvT6dHdTO4h3Y2uiO2Ou9nziMxmtJNRQv4SGy/dw89+8njqOQ1EwQJsZTTSyek0JVeavDdinQUhRlQFrpVagU+oIv8sKJKV1o/75VKSlufhGX0fSIyu7//u9ImiWCsHSG2wbDE2vLALKiRCktErULeyncZZY30ZWY1cW1qcmwiTs5h8mfaq+oNmhwzHjanzhTLSFvAj7ECIMMhFF2sYSdftFY0hQ2E9ThBcE964i6pFLiF+ZiKSUXwxaUNF3tRVgMGOMy49/fsjhG2qZT/IQ1lNORhibV1ru9BBUFOjuZLisuk//7p6N47fIEwZazx8J6z7VMC9+Rjk89+tORFczK9dW0BAElUmZG3FYGCxIpAbVaDCi5GzxIJdpZoQRgWn2x2yubxuqE+FCGaonxsPJSZhtOF+M7iY+vYOzDHR57gM45GMsSgjUlVEFbqAqy8YDrFnHYRcDrUWint11cfRBnf03ucBXnaqa+A/WxVssy7GODOuoc1Q6VSkkg4SR9k=
