@@ -103,7 +103,7 @@ object PlayGulpPlugin extends AutoPlugin {
 
     // Add asset files in ui/src directory to the watch list for auto browser
     watchSources <++= gulpDirectory map { path => ((path / "src") ** "*.scala.*").get},
-  
+
     // Run gulp before sbt run
     playRunHooks <+= (gulpDirectory, gulpFile, forceGulp).map {
       (base, fileName, isForceEnabled) => GulpWatch(base, fileName, isForceEnabled)
