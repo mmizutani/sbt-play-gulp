@@ -128,6 +128,19 @@ object PlayGulpPlugin extends AutoPlugin {
       }
   )
 
+  private def detectGulp(base: sbt.File): String = {
+    val globallyInstalledGulp = "gulp"
+    val npmInstalledGulp = base / "node_modules" / "gulp" / "bin" / "gulp.js"
+    val gulpCandidates: List[sbt.File] = npmInstalledGulp :: Nil
+    val maybeGulp = gulpCandidates
+      .filter(_.exists)
+      .headOption
+      .map(_.getAbsolutePath)
+
+    maybeGulp
+      .getOrElse(globallyInstalledGulp)
+  }
+
   private def runGulp(base: sbt.File, fileName: String,
                       args: List[String] = List.empty,
                       isForceEnabled: Boolean = true): Process = {
@@ -142,12 +155,14 @@ object PlayGulpPlugin extends AutoPlugin {
     else
       println("'force' not enabled")
 
+    val gulpExecutable = detectGulp(base)
+
     if (System.getProperty("os.name").startsWith("Windows")) {
-      val process: ProcessBuilder = Process("cmd" :: "/c" :: "gulp" :: "--gulpfile=" + fileName :: arguments, base)
+      val process: ProcessBuilder = Process("cmd" :: "/c" :: gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
       println(s"Will run: ${process.toString} in ${base.getPath}")
       process.run()
     } else {
-      val process: ProcessBuilder = Process("gulp" :: "--gulpfile=" + fileName :: arguments, base)
+      val process: ProcessBuilder = Process(gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
       println(s"Will run: ${process.toString} in ${base.getPath}")
       process.run()
     }
