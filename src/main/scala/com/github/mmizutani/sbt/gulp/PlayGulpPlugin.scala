@@ -143,7 +143,8 @@ object PlayGulpPlugin extends AutoPlugin {
 
   private def runGulp(base: sbt.File, fileName: String,
                       args: List[String] = List.empty,
-                      isForceEnabled: Boolean = true): Process = {
+                      isForceEnabled: Boolean = true,
+                      detach: Boolean = false): Process = {
     //println(s"Will run: gulp --gulpfile=$gulpFile $args in ${base.getPath}")
 
     val arguments = if (isForceEnabled) {
@@ -157,15 +158,19 @@ object PlayGulpPlugin extends AutoPlugin {
 
     val gulpExecutable = detectGulp(base)
 
-    if (System.getProperty("os.name").startsWith("Windows")) {
-      val process: ProcessBuilder = Process("cmd" :: "/c" :: gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
-      println(s"Will run: ${process.toString} in ${base.getPath}")
-      process.run()
+    val process = if (System.getProperty("os.name").startsWith("Windows")) {
+      Process("cmd" :: "/c" :: gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
     } else {
-      val process: ProcessBuilder = Process(gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
-      println(s"Will run: ${process.toString} in ${base.getPath}")
-      process.run()
+      Process(gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
     }
+    println(s"Will run: ${process.toString} in ${base.getPath}")
+    val startedProcess = process.run()
+    // this will block but only if we don't want to detach (eG watch)
+    val mustSucceedAndFailed = !detach && startedProcess.exitValue() != 0
+    if(mustSucceedAndFailed)
+      throw new java.io.IOException(s"$process in ${base.getPath} failed with exit code ${startedProcess.exitValue}")
+
+    startedProcess
   }
 
   import scala.language.postfixOps
@@ -194,7 +199,7 @@ object PlayGulpPlugin extends AutoPlugin {
         var watchProcess: Option[Process] = None
 
         override def beforeStarted(): Unit = {
-          watchProcess = Some(runGulp(base, fileName, "watch" :: Nil, isForceEnabled))
+          watchProcess = Some(runGulp(base, fileName, "watch" :: Nil, isForceEnabled, detach = true))
         }
 
         override def afterStopped(): Unit = {
