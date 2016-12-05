@@ -55,8 +55,8 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 3. Add the play gulp plugin to the `<your-project-root>/project/plugins.sbt` file along with the play sbt plugin `addSbtPlugin("com.typesafe.play" % "sbt-plugin" % ${playVersion})` and also import the sbt-play-gulp plugin of this repository:
 
     ```
-    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.2")
-    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.1")
+    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
+    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.2")
     ```
 
 4. Add settings specific to the sbt-play-gulp plugin in build.sbt:
