@@ -106,7 +106,8 @@ object PlayGulpPlugin extends AutoPlugin {
 
     // Run gulp before sbt run
     playRunHooks <+= (gulpDirectory, gulpFile, forceGulp).map {
-      (base, fileName, isForceEnabled) => GulpWatch(base, fileName, isForceEnabled)
+      (base, fileName, isForceEnabled) =>
+      GulpWatch(base, fileName, isForceEnabled)
     }
   )
 
@@ -191,6 +192,7 @@ object PlayGulpPlugin extends AutoPlugin {
   }
 
   object GulpWatch {
+    val Guard = new java.util.concurrent.Semaphore(1, true)
 
     def apply(base: File, fileName: String, isForceEnabled: Boolean): PlayRunHook = {
 
@@ -199,11 +201,17 @@ object PlayGulpPlugin extends AutoPlugin {
         var watchProcess: Option[Process] = None
 
         override def beforeStarted(): Unit = {
-          watchProcess = Some(runGulp(base, fileName, "watch" :: Nil, isForceEnabled, detach = true))
+          if(Guard.tryAcquire)
+            watchProcess = Some(runGulp(base, fileName, "watch" :: Nil, isForceEnabled, detach = true))
+          else
+            ()
         }
 
         override def afterStopped(): Unit = {
-          watchProcess.foreach(_.destroy())
+          watchProcess.foreach{ p =>
+            Guard.release
+            p.destroy()
+          }
           watchProcess = None
         }
       }
