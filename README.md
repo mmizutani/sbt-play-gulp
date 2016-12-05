@@ -8,7 +8,8 @@ If you do not like your Play app to depend on any sbt plugin, [play-gulp-standal
 ## Change logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
-* v0.1.1 (Latest) Fixed various errors.
+* v0.1.2 (Latest) Added better gulp detection mechanism and a mitigating lock on hooks. Thanks @mriehl for the pull requests #17 and #18.
+* v0.1.1 Fixed various errors.
 * v0.1.0 Added support for Play 2.5 and dropped support for Scala 2.10.
 * v0.0.7 Added jspm command - You can now execute jspm in the sbt console.
 * v0.0.6 Bumped up the Play sbt plugin version from 2.4.2 to 2.4.3.
@@ -62,8 +63,6 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```bash
     import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
-    ...
-    PlayGulpPlugin.playGulpSettings ++ PlayGulpPlugin.withTemplates
     ```
 
   or in project/Build.scala:
@@ -72,11 +71,8 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
     import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
 
     object HelloBuild extends Build {
-
-      override lazy val settings = super.settings ++ PlayGulpPlugin.playGulpSettings ++ PlayGulpPlugin.withTemplates
       lazy val root = (project in file("."))
         .enablePlugins(PlayScala)
-        .settings(settings: _*)
     }
     ```
 

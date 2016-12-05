@@ -42,7 +42,7 @@ object PlayGulpPlugin extends AutoPlugin {
    * Main plugin settings which add gulp commands to sbt tasks
    */
   lazy val playGulpSettings: Seq[Def.Setting[_]] = Seq(
-    libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "0.1.1" exclude("com.typesafe.play", "play"),
+    libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "0.1.2" exclude("com.typesafe.play", "play"),
 
     // Path of the frontend project root
     gulpDirectory <<= (baseDirectory in Compile) {
@@ -106,7 +106,8 @@ object PlayGulpPlugin extends AutoPlugin {
 
     // Run gulp before sbt run
     playRunHooks <+= (gulpDirectory, gulpFile, forceGulp).map {
-      (base, fileName, isForceEnabled) => GulpWatch(base, fileName, isForceEnabled)
+      (base, fileName, isForceEnabled) =>
+      GulpWatch(base, fileName, isForceEnabled)
     }
   )
 
@@ -191,6 +192,7 @@ object PlayGulpPlugin extends AutoPlugin {
   }
 
   object GulpWatch {
+    val Guard = new java.util.concurrent.Semaphore(1, true)
 
     def apply(base: File, fileName: String, isForceEnabled: Boolean): PlayRunHook = {
 
@@ -199,11 +201,17 @@ object PlayGulpPlugin extends AutoPlugin {
         var watchProcess: Option[Process] = None
 
         override def beforeStarted(): Unit = {
-          watchProcess = Some(runGulp(base, fileName, "watch" :: Nil, isForceEnabled, detach = true))
+          if(Guard.tryAcquire)
+            watchProcess = Some(runGulp(base, fileName, "watch" :: Nil, isForceEnabled, detach = true))
+          else
+            ()
         }
 
         override def afterStopped(): Unit = {
-          watchProcess.foreach(_.destroy())
+          watchProcess.foreach{ p =>
+            Guard.release
+            p.destroy()
+          }
           watchProcess = None
         }
       }

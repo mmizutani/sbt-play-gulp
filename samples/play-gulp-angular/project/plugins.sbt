@@ -1,6 +1,6 @@
 logLevel := Level.Warn
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.3")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
 
 // For developers only
 //lazy val root = (project in file(".")).dependsOn(plugin)
@@ -14,4 +14,4 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.3")
 //)
 
 // Import the plugin of this repository
-addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.1")
+addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.2")
