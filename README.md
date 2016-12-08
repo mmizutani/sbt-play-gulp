@@ -128,9 +128,9 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 8. Add the following routing settings in the `<your-project-root>/conf/routes` file:
 
     ```
-    GET     /           com.github.mmizutani.playgulp.GulpAssetes.redirectRoot("/ui/")
+    GET     /           com.github.mmizutani.playgulp.GulpAssets.redirectRoot("/ui/")
     ...
-    GET     /ui         com.github.mmizutani.playgulp.GulpAssetes.index
+    GET     /ui         com.github.mmizutani.playgulp.GulpAssets.index
     ->      /ui/        gulp.Routes
     ```
 
