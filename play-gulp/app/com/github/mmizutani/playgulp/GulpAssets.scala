@@ -1,12 +1,17 @@
 package com.github.mmizutani.playgulp
 
 import javax.inject._
+
 import play.api._
+import play.api.libs.MimeTypes
 import play.api.mvc._
 import java.io.File
+
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.collection.JavaConversions._
+
+import akka.stream.scaladsl.FileIO
 import controllers.Assets
 
 @Singleton
@@ -81,7 +86,10 @@ class GulpAssets @Inject() (env: play.api.Environment,
     } map { file =>
       if (file.isFile) {
         logger.info(s"Serving $file")
-        Ok.sendFile(file, inline = true).withHeaders(CACHE_CONTROL -> "no-store")
+        val source = FileIO.fromFile(file)
+        val mimeType = MimeTypes.forFileName(file.getName).orElse(Some(play.api.http.ContentTypes.BINARY))
+        val result = RangeResult.ofSource(file.length(), source, request.headers.get(RANGE), None,mimeType)
+        result.withHeaders(CACHE_CONTROL -> "no-cache")
       } else {
         Forbidden(views.html.defaultpages.unauthorized())
       }
