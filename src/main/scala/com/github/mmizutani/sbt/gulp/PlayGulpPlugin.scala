@@ -57,10 +57,16 @@ object PlayGulpPlugin extends AutoPlugin {
     commands <++= baseDirectory {
       base =>
         Seq(
-          "npm",
-          "bower",
           "yo",
           "git"
+        ).map(cmd(_, base))
+    }, 
+
+    commands <++= gulpDirectory {
+      base =>
+        Seq(
+          "npm",
+          "bower"
         ).map(cmd(_, base))
     },
 
