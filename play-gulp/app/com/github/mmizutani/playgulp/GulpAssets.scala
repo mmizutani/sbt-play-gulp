@@ -7,8 +7,7 @@ import play.api.libs.MimeTypes
 import play.api.mvc._
 import java.io.File
 
-import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 import scala.collection.JavaConversions._
 
 import akka.stream.scaladsl.FileIO
@@ -16,7 +15,8 @@ import controllers.Assets
 
 @Singleton
 class GulpAssets @Inject() (env: play.api.Environment,
-                            conf: Configuration) extends Controller {
+                            conf: Configuration)
+                           (implicit val ec:ExecutionContext) extends Controller {
 
   private lazy val logger = Logger(getClass)
 
