@@ -30,6 +30,11 @@ class ApplicationSpec extends PlaySpec with OneAppPerTest {
       contentAsString(home) must include ("Gulp Angular")
     }
 
+    "not return static assets with a Content-Disposition header" in {
+      val result = route(app, FakeRequest(GET, "/ui/")).get
+      header("Content-Disposition", result) mustBe (None)
+    }
+
     "render the old index page" in {
       val oldhome = route(app, FakeRequest(GET, "/oldhome")).get
       status(oldhome) mustBe OK
