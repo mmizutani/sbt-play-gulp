@@ -57,7 +57,6 @@ object PlayGulpPlugin extends AutoPlugin {
     commands <++= baseDirectory {
       base =>
         Seq(
-          "yo",
           "git"
         ).map(cmd(_, base))
     }, 
@@ -65,8 +64,10 @@ object PlayGulpPlugin extends AutoPlugin {
     commands <++= gulpDirectory {
       base =>
         Seq(
+          "yo",
           "npm",
-          "bower"
+          "bower",
+          "yarn"
         ).map(cmd(_, base))
     },
 
@@ -140,8 +141,7 @@ object PlayGulpPlugin extends AutoPlugin {
     val npmInstalledGulp = base / "node_modules" / "gulp" / "bin" / "gulp.js"
     val gulpCandidates: List[sbt.File] = npmInstalledGulp :: Nil
     val maybeGulp = gulpCandidates
-      .filter(_.exists)
-      .headOption
+      .find(_.exists)
       .map(_.getAbsolutePath)
 
     maybeGulp
