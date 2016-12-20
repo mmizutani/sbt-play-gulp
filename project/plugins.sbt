@@ -8,6 +8,6 @@
 //)
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.0")
-addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.3.0")
+addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.4.0")
 addSbtPlugin("com.github.gseitz" % "sbt-release" % "1.0.0")
 addSbtPlugin("com.jsuereth" % "sbt-pgp" % "1.0.0")

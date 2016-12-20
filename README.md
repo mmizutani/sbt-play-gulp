@@ -8,7 +8,9 @@ If you do not like your Play app to depend on any sbt plugin, [play-gulp-standal
 ## Change logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
-* v0.1.2 (Latest) Added better gulp detection mechanism and a mitigating lock on hooks. Thanks @mriehl for the pull requests #17 and #18.
+* v0.1.3 Reworked the devAssetHandler so that it no longer returns a Content-Disposition header. Kudos to @jeantil for the pull request [#22](/sbt-play-gulp/pull/22), [#23](/sbt-play-gulp/pull/23).
+         Added the [`yarn`](https://github.com/yarnpkg/yarn) command. (You can run the yarn package manager in the `/ui` directory from inside the sbt console.)
+* v0.1.2 Added better gulp detection mechanism and a mitigating lock on hooks. Thanks @mriehl for the pull requests #17 and #18.
 * v0.1.1 Fixed various errors.
 * v0.1.0 Added support for Play 2.5 and dropped support for Scala 2.10.
 * v0.0.7 Added jspm command - You can now execute jspm in the sbt console.
@@ -56,7 +58,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```
     addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
-    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.2")
+    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.3")
     ```
 
 4. Add settings specific to the sbt-play-gulp plugin in build.sbt:
@@ -162,9 +164,9 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 12. You can also test and package the Play app along with the compiled frontend assets:
 
     ```bash
-    [your-play-project] $ test
-    [your-play-project] $ testProd
-    [your-play-project] $ ;clean;stage;dist
+    [your-play-project] > test
+    [your-play-project] > testProd
+    [your-play-project] > ;clean;stage;dist
     ```
 
 ## How this works

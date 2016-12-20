@@ -42,7 +42,7 @@ object PlayGulpPlugin extends AutoPlugin {
    * Main plugin settings which add gulp commands to sbt tasks
    */
   lazy val playGulpSettings: Seq[Def.Setting[_]] = Seq(
-    libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "0.1.2" exclude("com.typesafe.play", "play"),
+    libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "0.1.3" exclude("com.typesafe.play", "play"),
 
     // Path of the frontend project root
     gulpDirectory <<= (baseDirectory in Compile) {
@@ -215,7 +215,7 @@ object PlayGulpPlugin extends AutoPlugin {
 
         override def afterStopped(): Unit = {
           watchProcess.foreach{ p =>
-            Guard.release
+            Guard.release()
             p.destroy()
           }
           watchProcess = None
