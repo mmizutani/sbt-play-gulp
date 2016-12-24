@@ -189,7 +189,7 @@ object PlayGulpPlugin extends AutoPlugin {
     Command.args(name, "<" + name + "-command>") {
       (state, args) =>
         if (System.getProperty("os.name").startsWith("Windows")) {
-          Process("cmd" :: "/c" :: name :: args.toList, base) !<
+          Process("cmd" :: "/c" :: "node" :: name :: args.toList, base) !<
         } else {
           Process(name :: args.toList, base) !<
         }
