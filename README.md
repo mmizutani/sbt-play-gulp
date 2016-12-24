@@ -58,7 +58,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```
     addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
-    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.3")
+    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.4")
     ```
 
 4. Add settings specific to the sbt-play-gulp plugin in build.sbt:
