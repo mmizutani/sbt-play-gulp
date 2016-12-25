@@ -166,7 +166,7 @@ object PlayGulpPlugin extends AutoPlugin {
     val gulpExecutable = detectGulp(base)
 
     val process = if (System.getProperty("os.name").startsWith("Windows")) {
-      Process("cmd" :: "/c" :: gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
+      Process("cmd" :: "/c" :: "node" :: gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
     } else {
       Process(gulpExecutable :: "--gulpfile=" + fileName :: arguments, base)
     }
