@@ -8,7 +8,7 @@ If you do not like your Play app to depend on any sbt plugin, [play-gulp-standal
 ## Change logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
-* v0.1.4 Fixed gulp.js resolution error on Windows.
+* v0.1.5 Fixed gulp.js resolution error on Windows.
 * v0.1.3 Reworked the devAssetHandler so that it no longer returns a Content-Disposition header. Kudos to @jeantil for the pull request [#22](/sbt-play-gulp/pull/22), [#23](/sbt-play-gulp/pull/23).
          Added the [`yarn`](https://github.com/yarnpkg/yarn) command. (You can run the yarn package manager in the `/ui` directory from inside the sbt console.)
 * v0.1.2 Added better gulp detection mechanism and a mitigating lock on hooks. Thanks @mriehl for the pull requests #17 and #18.
@@ -59,7 +59,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```
     addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
-    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.4")
+    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.5")
     ```
 
 4. Add settings specific to the sbt-play-gulp plugin in build.sbt:
