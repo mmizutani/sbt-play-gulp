@@ -8,7 +8,7 @@ node_js:
 
 before_script:
   - bundle install
-  - npm install -g yarn gulp bower
+  - npm install -g gulp-cli
 
 cache:
   directories:
@@ -16,10 +16,7 @@ cache:
   - $HOME/.ivy2
   - $HOME/.sbt/boot/scala-$TRAVIS_SCALA_VERSION
   - $HOME/.sbt/launchers
-  - samples/play-gulp-angular/ui/node_modules
-  - samples/play-gulp-angular/ui/src/bower_components
   - samples/play-gulp-react/ui/node_modules
-  - samples/play-gulp-react/ui/app/bower_components
 
 before_cache:
   - rm -rf $HOME/.ivy2/local/com.github.mmizutani/*
@@ -35,7 +32,7 @@ matrix:
 
 script:
   - sbt "^^${SBT_VERSION}" test scripted
-  - cd samples/play-gulp-angular/ui && npm install && bower install
+  - cd samples/play-gulp-react/ui && npm install
   - cd ../ && sbt ";clean;compile;test"
 
 notifications:

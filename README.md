@@ -58,7 +58,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 1. Install npm and other prerequisites:
 
     ```bash
-    $ npm install -g yo gulp bower
+    $ npm install -g yo gulp-cli bower
     ```
 
 2. If you do not have any existing Play project, create a plain one like the play-scala template and specify in `<your-project-root>/project/build.properties` the sbt version as `sbt.version=1.1.1`.
@@ -74,17 +74,6 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```bash
     import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
-    ```
-
-  or in project/Build.scala:
-
-    ```bash
-    import com.github.mmizutani.sbt.gulp.PlayGulpPlugin
-
-    object HelloBuild extends Build {
-      lazy val root = (project in file("."))
-        .enablePlugins(PlayScala)
-    }
     ```
 
 5. Create an `<your-project-root>/ui` folder and populate the Yeoman frontend template of your choice in the ui directory:
@@ -105,11 +94,11 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
     $ sed -e 's/\x27bower_components\x27/\x27src\/bower_components\x27/' gulp/conf.js
     ```
 
-    This adjustment is necessary since the root directory of static assets is ui/src in the development and test modes of a Play application, which does not allow us to serve files in directories higher than the ui/src (e.g., ui/bower_components).
+    This adjustment is necessary since the root directory of static assets is ui/src in the development and test modes of a Play application, which does not allow us to serve files in directories higher than the ui/src (e.g., ui/bower_components). This step is not necessary if you generate the frontend project in ui using Yeoman Fountain generators.
 
 7. Make sure that this plugin recognizes the correct source and output directory paths of your Gulp frontend project.
 
-    By default, the sbt-play-gulp plugin assumes that frontend static asset files reside in `ui/.tmp.serve`, `ui/src` or `ui` directories, a behavior specifically tailored for the Yeoman Gulp-Angular template project. In development and test modes the playgulp.GulpAssets handler looks for frontend static files in ui/.tmp/serve directory first. If those files were not found there, the asset handeler next tries ui/src directory and then the ui directory. If your frontend project under the ui directory is based on a different Yaoman template and thus serves files from a diffent folder (e.g., `ui/app`), you can customize this behavior by overriding the default values of the devDirs array in `conf/application.conf` of your Play project:
+    By default, the sbt-play-gulp plugin assumes that frontend static asset files reside in `ui/.tmp.serve`, `ui/src` or `ui` directories, a behavior specifically tailored for the Yeoman Gulp-Angular template project. In development and test modes the playgulp.GulpAssets handler looks for frontend static files in ui/.tmp/serve directory first. If those files were not found there, the asset handler next tries ui/src directory and then the ui directory. If your frontend project under the ui directory is based on a different Yeoman template and thus serves files from a diffent folder (e.g., `ui/app`), you can customize this behavior by overriding the default values of the devDirs array in `conf/application.conf` of your Play project:
 
     ```
     #gulp.devDirs=["ui/.tmp/serve", "ui/src", "ui"]
