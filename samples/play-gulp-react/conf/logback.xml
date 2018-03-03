@@ -33,15 +33,8 @@
   <logger name="com.avaje.ebeaninternal.server.lib.BackgroundThread" level="OFF" />
   <logger name="com.gargoylesoftware.htmlunit.javascript" level="OFF" />
 
-  <!--
-    Commment out the next line or change the root log level from DEBUG to ERROR
-    if you do not need logging to console each time static assets
-    in ui/src and ui/dist are served to a web browser through the GulpAssets controller.
-  -->
-  <logger name="com.github.mmizutani.playgulp.GulpAssets" level="DEBUG" />
-
   <root level="WARN">
-    <appender-ref ref="ASYNCFILE" />
+    <!--<appender-ref ref="ASYNCFILE" />-->
     <appender-ref ref="ASYNCSTDOUT" />
   </root>
 

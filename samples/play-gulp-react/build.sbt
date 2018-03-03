@@ -1,14 +1,17 @@
-lazy val `play-gulp-react`: Project = (project in file(".")).enablePlugins(PlayScala)
+name := """play-scala-seed"""
+organization := "com.example"
 
-scalaVersion := "2.11.8"
+version := "1.0-SNAPSHOT"
 
-libraryDependencies ++= Seq(
-  jdbc,
-  cache,
-  ws,
-  "org.scalatestplus.play" %% "scalatestplus-play" % "1.5.0" % Test
-)
+lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
-resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+scalaVersion := "2.12.4"
 
-routesGenerator := InjectedRoutesGenerator
+libraryDependencies += guice
+libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
+
+// Adds additional packages into Twirl
+//TwirlKeys.templateImports += "com.example.controllers._"
+
+// Adds additional packages into conf/routes
+// play.sbt.routes.RoutesKeys.routesImport += "com.example.binders._"
