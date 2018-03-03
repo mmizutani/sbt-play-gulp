@@ -1,0 +1,4 @@
+> stage
+$ exists target/scala-2.12/package-ui-assets_2.12-1.0-SNAPSHOT-web-assets.jar
+> findInZip target/scala-2.12/package-ui-assets_2.12-1.0-SNAPSHOT-web-assets.jar META-INF/MANIFEST.MF
+> findInZip target/scala-2.12/package-ui-assets_2.12-1.0-SNAPSHOT-web-assets.jar public/index.html

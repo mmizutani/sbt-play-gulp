@@ -1,0 +1,6 @@
+> npm install
+> gulp
+> gulp build
+> gulp watch
+> gulp test
+> gulp clean

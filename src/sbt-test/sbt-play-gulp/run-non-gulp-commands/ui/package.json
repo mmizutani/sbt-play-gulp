@@ -1,0 +1,10 @@
+{
+  "description": "sbt plugin scripted test",
+  "repository": "https://github.com/mmizutani/sbt-play-gulp.git",
+  "license": "MIT",
+  "devDependencies": {
+    "bower": "^1.8.2",
+    "gulp": "^3.9.1",
+    "yarn": "^1.5.1"
+  }
+}
