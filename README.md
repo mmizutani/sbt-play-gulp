@@ -1,9 +1,12 @@
-# SBT Play Gulp Plugin [![Build Status](https://travis-ci.org/mmizutani/sbt-play-gulp.svg?branch=master)](https://travis-ci.org/mmizutani/sbt-play-gulp)
+# SBT Play Gulp Plugin
 > Gulp Asset Pipeline for Play Framework
 
-**SBT Play Gulp Plugin** is an SBT plugin which allows you to use Gulp for static assets compilation in Play Framework projects.
+[![Build Status](https://travis-ci.org/mmizutani/sbt-play-gulp.svg?branch=master)](https://travis-ci.org/mmizutani/sbt-play-gulp)
+
+**sbt-play-gulp** is an SBT plugin to use Gulp for static assets compilation in Play Framework projects.
 
 If you do not like your Play app to depend on any sbt plugin, [play-gulp-standalone](https://github.com/mmizutani/play-gulp-standalone) might be a better fit for you.
+
 
 ## Change logs
 
@@ -18,10 +21,15 @@ If you do not like your Play app to depend on any sbt plugin, [play-gulp-standal
 * v0.0.6 Bumped up the Play sbt plugin version from 2.4.2 to 2.4.3.
 * v0.0.5 Fixed a bug concerning the path to the compiled static assets.
 
-| Plugin version | Play version | Scala version |
-|----------------|--------------|---------------|
-| 0.1.x          | 2.5.x        | 2.11.x        |
-| - 0.0.7        | 2.4.x        | 2.10.x/2.11.x |
+
+## Version compatibility
+
+| Plugin version | Play version | Scala version | sbt version |
+|----------------|--------------|---------------|-------------|
+| 0.2.x          | 2.6.6-       | 2.12.x        | 1.x         |
+|                | 2.6.0-5      | 2.12.x        | 0.13.15-    |
+| 0.1.x          | 2.5.x        | 2.11.x        | 0.13.0-14   |
+| - 0.0.7        | 2.4.x        | 2.10.x/2.11.x | 0.13.0-14   |
 
 
 ## Features
@@ -187,7 +195,7 @@ So make sure that the gulpfile.js in the `ui` directory of your Play project imp
 
 Built upon SBT's [auto plugin](http://www.scala-sbt.org/0.13/docs/Plugins.html) architecture, the Play Gulp plugin adds itself automatically to projects that have the sbt-play plugin enabled once you add it in `project/plugins.sbt`. It is not necessary to manually add `enablePlugins(PlayGulpPlugin)` to `build.sbt` of your Play project.
 
-When compilation or testing takes place, the `PlayGulpPlugin` runs all required tasks on your Play projects and copies the processed files into the web assets jar (`target/scala-2.11/<play-project-name>_2.11-x.x.x-web-assets.jar/META-INF/webjars/x.x.x/***`).
+When compilation or testing takes place, the `PlayGulpPlugin` runs all the required tasks on your Play projects and copies the processed files into the web assets jar (`target/scala-2.11/<play-project-name>_2.11-x.x.x-web-assets.jar/META-INF/webjars/x.x.x/***`).
 
 
 ## For developers

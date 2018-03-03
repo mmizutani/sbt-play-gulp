@@ -1,53 +1,44 @@
 lazy val root = (project in file("."))
   .aggregate(`sbt-play-gulp`, `play-gulp`)
 
-lazy val `sbt-play-gulp`: Project = (project in file("."))
+lazy val `sbt-play-gulp` = (project in file("."))
+  .enablePlugins(GitVersioning)
   .settings(
     name := "sbt-play-gulp",
-    scalaVersion := "2.10.6",
     sbtPlugin := true,
-    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.0"),
-    addSbtPlugin("com.typesafe.sbt" % "sbt-web" % "1.3.0"),
-    commonSettings
+    crossSbtVersions := Seq("0.13.16", "1.1.1"),
+    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.11"),
+    commonSettings,
+    scriptedScalatestSettings
   )
 
-lazy val `play-gulp`: Project = project.in(file("play-gulp"))
+lazy val `play-gulp` = (project in file("play-gulp"))
   .enablePlugins(PlayScala)
+  .enablePlugins(GitVersioning)
   .settings(
     name := "play-gulp",
-    scalaVersion := "2.11.8",
     commonSettings
   )
 
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
-  javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
-) ++ mavenPublishSettings
+  javacOptions in Compile ++= Seq("-encoding", "utf8", "-g"),
+  scalaVersion := (crossScalaVersions in ThisBuild).value.last
+) ++ bintrayPublishSettings
 
-lazy val mavenPublishSettings = Seq(
+lazy val bintrayPublishSettings = Seq(
+  description := "An SBT plugin to use Gulp for static assets compilation in Play Framework projects",
   organization := "com.github.mmizutani",
   licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
   homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp")),
-  publishMavenStyle := true,
-  publishTo <<= version { (v: String) =>
-    val nexus = "https://oss.sonatype.org/"
-    if (v.trim.endsWith("SNAPSHOT"))
-      Some("snapshots" at nexus + "content/repositories/snapshots")
-    else
-      Some("releases" at nexus + "service/local/staging/deploy/maven2")
-  },
-  publishArtifact in Test := false,
-  pomIncludeRepository := { _ => false },
-  pomExtra :=
-    <scm>
-      <url>git@github.com:mmizutani/play-gulp.git</url>
-      <connection>scm:git:git@github.com:mmizutani/sbt-play-gulp.git</connection>
-    </scm>
-    <developers>
-      <developer>
-        <id>minorumizutani</id>
-        <name>Minoru Mizutani</name>
-        <url>https://github.com/mmizutani</url>
-      </developer>
-    </developers>
+  publishMavenStyle := false,
+  bintrayOrganization := None,
+  bintrayRepository := "sbt-plugins",
+  bintrayPackage := "sbt-play-gulp",
+  bintrayReleaseOnPublish := false
+)
+
+lazy val scriptedScalatestSettings = Seq(
+  scriptedBufferLog := false,
+  scriptedLaunchOpts += s"-Dplugin.version=${version.value}"
 )
