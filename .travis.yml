@@ -8,7 +8,7 @@ node_js:
 
 before_script:
   - bundle install
-  - npm install -g gulp-cli
+  - npm install -g gulp-cli gulp bower
 
 cache:
   directories:
