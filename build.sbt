@@ -22,14 +22,14 @@ lazy val `play-gulp` = (project in file("play-gulp"))
 
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
-  javacOptions in Compile ++= Seq("-encoding", "utf8", "-g"),
-  scalaVersion := (crossScalaVersions in ThisBuild).value.last
+  javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
 ) ++ bintrayPublishSettings
 
 lazy val bintrayPublishSettings = Seq(
   description := "An SBT plugin to use Gulp for static assets compilation in Play Framework projects",
   organization := "com.github.mmizutani",
-  licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html")),
+  licenses += ("Apache-2.0", url(
+    "https://www.apache.org/licenses/LICENSE-2.0.html")),
   homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp")),
   publishMavenStyle := false,
   bintrayOrganization := None,
@@ -42,3 +42,5 @@ lazy val scriptedScalatestSettings = Seq(
   scriptedBufferLog := false,
   scriptedLaunchOpts += s"-Dplugin.version=${version.value}"
 )
+
+scalafmtOnCompile in ThisBuild := true
