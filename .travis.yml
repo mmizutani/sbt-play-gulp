@@ -31,7 +31,7 @@ matrix:
     jdk: oraclejdk8
 
 script:
-  - sbt "^^${SBT_VERSION}" test scripted
+  - sbt ";^^${SBT_VERSION};project sbt-play-gulp;test;scripted"
   - cd samples/play-gulp-react/ui && npm install
   - cd ../ && sbt ";clean;compile;test"
 
