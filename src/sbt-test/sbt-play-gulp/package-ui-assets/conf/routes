@@ -1,6 +1,6 @@
-GET  /oldhome                   @controllers.ApplicationController.oldhome
+GET  /oldhome                    controllers.ApplicationController.oldhome
 GET  /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-GET  /                          @controllers.ApplicationController.index
+GET  /                           controllers.ApplicationController.index
 GET  /ui                         com.github.mmizutani.playgulp.GulpAssets.index
 ->   /ui/                        gulp.Routes
