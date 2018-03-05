@@ -1,29 +1,25 @@
 package com.github.mmizutani.playgulp
 
-import java.io.{File, InputStream}
+import java.io.File
 import java.net.URLConnection
 
-import javax.inject.{Inject, Singleton}
-
-import scala.concurrent.{ExecutionContext, Future}
 import akka.stream.scaladsl.StreamConverters
+import javax.inject.{Inject, Singleton}
 import play.api._
 import play.api.http._
 import play.api.mvc._
-import play.api.inject.ApplicationLifecycle
+
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class GulpAssets @Inject()(ctx: BuiltInComponentsFromContext)(
-    implicit val ec: ExecutionContext)
-    extends InjectedController
-    with _root_.controllers.AssetsComponents {
+class GulpAssets @Inject()(
+    cc: ControllerComponents,
+    env: Environment,
+    conf: Configuration,
+    assets: _root_.controllers.Assets)(implicit val ec: ExecutionContext)
+    extends AbstractController(cc) {
 
   private lazy val logger = Logger(getClass)
-
-  def applicationLifecycle: ApplicationLifecycle = ctx.applicationLifecycle
-  def configuration: Configuration = ctx.configuration
-  def environment: Environment = ctx.environment
-  def httpErrorHandler: HttpErrorHandler = ctx.httpErrorHandler
 
   /**
     * Serve the index page (ui/{src,dist}/index.html) built by Gulp tasks
@@ -46,24 +42,22 @@ class GulpAssets @Inject()(ctx: BuiltInComponentsFromContext)(
     }
   }
 
-//  val runtimeDirs = Some(configuration.underlying.getStringList("gulp.devDirs"))
-  val runtimeDirs = Some(configuration.get[Seq[String]]("gulp.devDirs"))
+  val runtimeDirs = Some(conf.get[Seq[String]]("gulp.devDirs"))
 
   // List of UI directories from which static assets are served in the development mode
   // in descending order of importance
   val basePaths: List[java.io.File] = runtimeDirs match {
-//    case Some(dirs) => dirs.asScala.toList.map(environment.getFile)
-    case Some(dirs) => dirs.toList.map(environment.getFile)
+    case Some(dirs) => dirs.toList.map(env.getFile)
     case _ =>
       List(
-        environment.getFile("ui/.tmp/serve"),
-        environment.getFile("ui/src"),
-        environment.getFile("ui")
+        env.getFile("ui/.tmp/serve"),
+        env.getFile("ui/src"),
+        env.getFile("ui")
       ) // If "gulp.devDirs" is not specified in conf/application.conf
   }
 
   lazy val atHandler: String => Action[AnyContent] =
-    environment.mode match {
+    env.mode match {
       case Mode.Prod => prodAssetHandler(_: String)
       case _         => devAssetHandler(_: String)
     }
@@ -98,16 +92,16 @@ class GulpAssets @Inject()(ctx: BuiltInComponentsFromContext)(
         if (file.isFile) {
           logger.info(s"Serving $file")
           val connection: URLConnection = file.toURI.toURL.openConnection
-          val stream: InputStream = connection.getInputStream
-          val source = StreamConverters.fromInputStream(() => stream)
-          val mimeType: Option[String] = fileMimeTypes
+          val source =
+            StreamConverters.fromInputStream(() => connection.getInputStream)
+          val maybeMimeType: Option[String] = fileMimeTypes
             .forFileName(file.getName)
             .orElse(Some(ContentTypes.BINARY))
           Ok.sendEntity(
               HttpEntity.Streamed(
                 source,
                 Some(file.length()),
-                mimeType
+                maybeMimeType
               ))
             .withHeaders(CACHE_CONTROL -> "no-cache")
         } else {
@@ -124,7 +118,7 @@ class GulpAssets @Inject()(ctx: BuiltInComponentsFromContext)(
     * Asset handler for production mode
     *
     * Static asset files (JavaScript, CSS, images, etc.) in app/assets, public and ui/dist folders
-    * are all placed in the /public folder (or other path configured by play.assets.path in application.conf)
+    * are all placed in the /public folder (or any other path configured by play.assets.path in application.conf)
     * of the classpath in production mode.
     *
     * @param file Path and file name of the static asset served to the client in the production mode
