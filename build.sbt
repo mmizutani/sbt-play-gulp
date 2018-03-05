@@ -4,7 +4,6 @@ lazy val root = (project in file("."))
   .settings(
     inThisBuild(
       Seq(
-        version := "0.2.0-SNAPSHOT",
         crossSbtVersions := Seq("0.13.16", "1.1.1"),
         scalafmtOnCompile := true
       )),
@@ -15,7 +14,6 @@ lazy val `sbt-play-gulp` = (project in file("sbt-play-gulp"))
   .settings(
     name := "sbt-play-gulp",
     sbtPlugin := true,
-//    crossSbtVersions := Seq("0.13.16", "1.1.1"),
     addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.11"),
     commonSettings
   )
@@ -47,7 +45,6 @@ lazy val scriptedScalatestSettings = Seq(
   scriptedLaunchOpts := {
     scriptedLaunchOpts.value ++ Seq(
       "-Xmx1024M",
-      "-XX:MaxPermSize=256M",
       "-Dplugin.version=" + (version in ThisBuild).value)
   }
 )
