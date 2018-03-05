@@ -11,6 +11,7 @@ If you do not like your Play app to depend on any sbt plugin, [play-gulp-standal
 ## Change logs
 
 [Sonatype Releases](https://oss.sonatype.org/#nexus-search;quick~play gulp)
+* v0.2.0 Upgraded for Play 2.6, Scala 2.12 and sbt 1.x.
 * v0.1.5 Fixed gulp.js resolution error on Windows.
 * v0.1.3 Reworked the devAssetHandler so that it no longer returns a Content-Disposition header. Kudos to @jeantil for the pull request [#22](/sbt-play-gulp/pull/22), [#23](/sbt-play-gulp/pull/23).
          Added the [`yarn`](https://github.com/yarnpkg/yarn) command. (You can run the yarn package manager in the `/ui` directory from inside the sbt console.)
@@ -42,7 +43,6 @@ This SBT plugin allows you to:
 ## Demos
 
 To see the plugin in action and how to configure the gulpfile.js, please see and run the sample Play projects
-* [play-gulp-angular](https://github.com/mmizutani/sbt-play-gulp/tree/master/samples/play-gulp-angular)
 * [play-gulp-react](https://github.com/mmizutani/sbt-play-gulp/tree/master/samples/play-gulp-react)
 
 in the samples directory of this repository.
@@ -67,7 +67,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```
     addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10")
-    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.1.5")
+    addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.2.0")
     ```
 
 4. Add settings specific to the sbt-play-gulp plugin in build.sbt:
@@ -128,10 +128,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 8. Add the following routing settings in the `<your-project-root>/conf/routes` file:
 
     ```
-    GET     /           com.github.mmizutani.playgulp.GulpAssets.redirectRoot("/ui/")
-    ...
-    GET     /ui         com.github.mmizutani.playgulp.GulpAssets.index
-    ->      /ui/        gulp.Routes
+    ->      /        gulp.Routes
     ```
 
 9. Edit `package.json`, `bower.json` and `gulpfile.js`, enter the play-sbt console, and install public libraries:
@@ -193,6 +190,6 @@ When compilation or testing takes place, the `PlayGulpPlugin` runs all the requi
 $ echo 'version in ThisBuild := "x.x.x"' > ./version.sbt
 $ vi src/main/scala/com/github/mmizutani/sbt/gulp/PlayGulpPlugin.scala
 libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "x.x.x" exclude("com.typesafe.play", "play"),
-$ sbt scripted
-$ sbt publish
+$ sbt ";project play-gulp;scripted;publish"
+$ sbt ";project sbt-play-gulp;scripted;publish"
 ```
