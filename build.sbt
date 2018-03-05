@@ -7,7 +7,19 @@ lazy val root = (project in file("."))
         crossSbtVersions := Seq("0.13.16", "1.1.1"),
         scalafmtOnCompile := true
       )),
-    scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8")
+    scalacOptions ++= Seq(
+      "-deprecation",
+      "-unchecked",
+      "-unchecked",
+      "-Xlint",
+      "-Ywarn-dead-code",
+      "-Ywarn-numeric-widen",
+      "-Ywarn-unused",
+      "-Ywarn-unused-import",
+      "-Ywarn-value-discard",
+      "-encoding",
+      "utf8"
+    )
   )
 
 lazy val `sbt-play-gulp` = (project in file("sbt-play-gulp"))
@@ -33,9 +45,9 @@ lazy val bintrayPublishSettings = Seq(
   licenses += ("Apache-2.0", url(
     "https://www.apache.org/licenses/LICENSE-2.0.html")),
   homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp")),
-  publishMavenStyle := true,
+  publishMavenStyle := false,
   bintrayOrganization := None,
-  bintrayRepository := "maven",
+  bintrayRepository := "sbt-plugins",
   bintrayPackage := "sbt-play-gulp",
   bintrayReleaseOnPublish := false
 )
