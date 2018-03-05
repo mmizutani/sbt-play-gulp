@@ -27,16 +27,14 @@ lazy val `sbt-play-gulp` = (project in file("sbt-play-gulp"))
     name := "sbt-play-gulp",
     sbtPlugin := true,
     addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.11"),
-    commonSettings,
-    bintrayPackage := "sbt-play-gulp"
+    commonSettings
   )
 
 lazy val `play-gulp` = (project in file("play-gulp"))
   .enablePlugins(PlayScala)
   .settings(
     name := "play-gulp",
-    commonSettings,
-    bintrayPackage := "play-gulp"
+    commonSettings
   )
 
 lazy val commonSettings = bintrayPublishSettings ++ scriptedScalatestSettings
@@ -50,6 +48,7 @@ lazy val bintrayPublishSettings = Seq(
   publishMavenStyle := false,
   bintrayOrganization := None,
   bintrayRepository := "sbt-plugins",
+  bintrayPackage := "sbt-play-gulp",
   bintrayReleaseOnPublish := false
 )
 
