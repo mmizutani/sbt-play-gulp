@@ -7,7 +7,6 @@ node_js:
   - 8.4.0
 
 before_script:
-  - bundle install
   - npm install -g gulp-cli gulp bower
 
 cache:
@@ -16,7 +15,6 @@ cache:
   - $HOME/.ivy2
   - $HOME/.sbt/boot/scala-$TRAVIS_SCALA_VERSION
   - $HOME/.sbt/launchers
-  - samples/play-gulp-react/ui/node_modules
 
 before_cache:
   - rm -rf $HOME/.ivy2/local/com.github.mmizutani/*
@@ -31,9 +29,8 @@ matrix:
     jdk: oraclejdk8
 
 script:
+  - sbt ";^^${SBT_VERSION};project play-gulp;test;scripted"
   - sbt ";^^${SBT_VERSION};project sbt-play-gulp;test;scripted"
-  - cd samples/play-gulp-react/ui && npm install
-  - cd ../ && sbt ";clean;compile;test"
 
 notifications:
   slack:
