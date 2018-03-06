@@ -37,18 +37,40 @@ lazy val `play-gulp` = (project in file("play-gulp"))
     commonSettings
   )
 
-lazy val commonSettings = bintrayPublishSettings ++ scriptedScalatestSettings
-
-lazy val bintrayPublishSettings = Seq(
+lazy val commonSettings = Seq(
   description := "An SBT plugin to use Gulp for static assets compilation in Play Framework projects",
   organization := "com.github.mmizutani",
   licenses += ("Apache-2.0", url(
     "https://www.apache.org/licenses/LICENSE-2.0.html")),
-  homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp")),
+  homepage := Some(url("https://github.com/mmizutani/sbt-play-gulp"))
+) ++ mavenPublishSettings ++ scriptedScalatestSettings
+
+lazy val bintrayPublishSettings = Seq(
   publishMavenStyle := false,
   bintrayOrganization := None,
   bintrayRepository := "sbt-plugins",
   bintrayPackage := "sbt-play-gulp"
+)
+
+lazy val mavenPublishSettings = Seq(
+  pomIncludeRepository := { _ =>
+    false
+  },
+  scmInfo := Some(
+    ScmInfo(url("https://github.com/mmizutani/sbt-play-gulp"),
+            "scm:git@github.com:mmizutani/sbt-play-gulp.git")),
+  publishMavenStyle := true,
+  publishTo := Some(
+    "releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2"),
+  publishArtifact in Test := false,
+  developers := List(
+    Developer(
+      id = "minorumizutani",
+      name = "Minoru Mizutani",
+      email = "minoru.mizutani@gmail.com",
+      url = url("https://github.com/mmizutani")
+    )
+  )
 )
 
 lazy val scriptedScalatestSettings = Seq(

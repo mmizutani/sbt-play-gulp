@@ -186,10 +186,18 @@ When compilation or testing takes place, the `PlayGulpPlugin` runs all the requi
 
 ## For developers
 
+### Deployment to Bintray
+
 ```bash
-$ echo 'version in ThisBuild := "x.x.x"' > ./version.sbt
-$ vi src/main/scala/com/github/mmizutani/sbt/gulp/PlayGulpPlugin.scala
-libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "x.x.x" exclude("com.typesafe.play", "play"),
 $ sbt ";project play-gulp;scripted;publish"
 $ sbt ";project sbt-play-gulp;scripted;publish"
 ```
+
+### Deployment to Sonatype
+
+```bash
+$ sbt ";project play-gulp;clean;update;compile;stage;publishSigned;sonatypeRelease"
+$ sbt ";project sbt-play-gulp;clean;update;compile;package;publishSigned;sonatypeRelease"
+```
+
+
