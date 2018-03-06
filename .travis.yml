@@ -7,7 +7,7 @@ node_js:
   - 8.4.0
 
 before_script:
-  - npm install -g gulp-cli gulp bower
+  - npm install -g gulp-cli gulp
 
 cache:
   directories:
