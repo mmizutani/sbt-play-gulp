@@ -38,7 +38,7 @@ object PlayGulpPlugin extends AutoPlugin {
 
   // Main plugin settings which add gulp commands to sbt tasks
   lazy val playGulpSettings: Seq[Def.Setting[_]] = Seq(
-    // sbt-play-gulp plugin needs play-gulp library
+    // sbt-play-gulp plugin needs play-gulp library of the same version
     libraryDependencies += "com.github.mmizutani" %% "play-gulp" % "0.2.0" exclude ("com.typesafe.play", "play"),
     // Path of the frontend project root
     gulpDirectory := (baseDirectory in Compile) {

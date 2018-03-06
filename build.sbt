@@ -48,8 +48,7 @@ lazy val bintrayPublishSettings = Seq(
   publishMavenStyle := false,
   bintrayOrganization := None,
   bintrayRepository := "sbt-plugins",
-  bintrayPackage := "sbt-play-gulp",
-  bintrayReleaseOnPublish := false
+  bintrayPackage := "sbt-play-gulp"
 )
 
 lazy val scriptedScalatestSettings = Seq(

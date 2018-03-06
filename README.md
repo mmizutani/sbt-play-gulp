@@ -53,7 +53,7 @@ in the samples directory of this repository.
 This plugin is assumed to be mainly for those who have been familiar with Gulp and would like to utilize Gulp instead of the official web-jar ecosystem for static asset compilation in Play Framework. Play Gulp Plugin is largely a modification of the [play-yeoman plugin](https://github.com/tuplejump/play-yeoman), which uses Grunt rather than Gulp. I created this custom plugin after having found that Gulp configuration is more streamlined and easier to use compared with Grunt.
 
 
-## How to use this sbt plugin
+## Usage
 
 1. Install npm and other prerequisites:
 
