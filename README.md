@@ -10,7 +10,7 @@ If you do not like your Play app to depend on any sbt plugin, [play-gulp-standal
 
 ## Change logs
 
-[Bintray Releases](https://bintray.com/mmizutani/sbt-plugins/sbt-play-gulp/#release)
+[Releases](https://bintray.com/mmizutani/sbt-plugins/sbt-play-gulp/#files/com.github.mmizutani)
 * v0.2.0 Upgraded for Play 2.6, Scala 2.12 and sbt 1.x., moved from Sonatype to Bintray
 * v0.1.5 Fixed gulp.js resolution error on Windows.
 * v0.1.3 Reworked the devAssetHandler so that it no longer returns a Content-Disposition header. Kudos to @jeantil for the pull request [#22](/sbt-play-gulp/pull/22), [#23](/sbt-play-gulp/pull/23).
