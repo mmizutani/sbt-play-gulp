@@ -111,7 +111,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
     import PlayGulpPlugin._
     import PlayGulpKeys._
     ...
-    unmanagedResourceDirectories in Assets += (gulpDirectory in Compile)(base => base / "build")
+    unmanagedResourceDirectories in Assets += (gulpDirectory in Compile)(base => base / "build").value
     ```
 
     This adds `ui/build` to the list of directories from which SBT packs non-Java/non-Scala static files into application jars.
