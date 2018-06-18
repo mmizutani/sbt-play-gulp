@@ -160,7 +160,7 @@ This plugin is assumed to be mainly for those who have been familiar with Gulp a
 
     ```bash
     [your-play-project] > test
-    [your-play-project] > testProd
+    [your-play-project] > runProd
     [your-play-project] > ;clean;stage;dist
     ```
 
