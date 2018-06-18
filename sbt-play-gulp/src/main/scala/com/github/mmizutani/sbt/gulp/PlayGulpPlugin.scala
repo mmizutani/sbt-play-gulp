@@ -45,7 +45,7 @@ object PlayGulpPlugin extends AutoPlugin {
       _ / "ui"
     }.value,
     gulpFile := "gulpfile.js",
-    gulpForce := true,
+    gulpForce := false,
     // Allow all the specified commands below to be run within sbt in addition to gulp
     commands ++= baseDirectory { base =>
       Seq(
@@ -144,7 +144,7 @@ object PlayGulpPlugin extends AutoPlugin {
   private def runGulp(base: sbt.File,
                       fileName: String,
                       args: List[String] = List.empty,
-                      isForceEnabled: Boolean = true,
+                      isForceEnabled: Boolean = false,
                       detach: Boolean = false): Process = {
     //println(s"Will run: gulp --gulpfile=$gulpFile $args in ${base.getPath}")
 
