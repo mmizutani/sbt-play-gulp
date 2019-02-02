@@ -2,7 +2,7 @@ package com.github.mmizutani.sbt.gulp
 
 import sbt._
 import sbt.Keys._
-import play.sbt.{Play, PlayRunHook}
+import play.sbt.{PlayWeb, PlayRunHook}
 import play.sbt.PlayImport.PlayKeys._
 import play.twirl.sbt.Import.TwirlKeys
 import com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._
@@ -13,7 +13,7 @@ import scala.sys.process.Process
 object PlayGulpPlugin extends AutoPlugin {
 
   // This plugin requires the sbt Play plugin to be enabled
-  override def requires = Play
+  override def requires = PlayWeb
 
   // If all requirements are met, this plugin is automatically enabled
   override def trigger = allRequirements
