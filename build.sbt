@@ -26,7 +26,7 @@ lazy val `sbt-play-gulp` = (project in file("sbt-play-gulp"))
   .settings(
     name := "sbt-play-gulp",
     sbtPlugin := true,
-    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.11"),
+    addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.7.0"),
     commonSettings
   )
 
